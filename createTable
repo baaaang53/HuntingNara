@@ -1,0 +1,16 @@
+
+# CREATE DATABASE main
+
+USE main;
+
+CREATE TABLE test
+(
+  id int,
+  name varchar(255),
+  age int
+);
+
+INSERT INTO test (id, name, age)
+VALUES (1, 'John Doe', 20), (2, 'keroro', 21);
+
+SELECT * FROM test;
