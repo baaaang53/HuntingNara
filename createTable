@@ -1,5 +1,5 @@
 
-CREATE DATABASE main
+CREATE DATABASE main;
 
 USE main;
 
