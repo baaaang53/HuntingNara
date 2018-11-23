@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- javascript -->
+    <script type="text/javascript">
+        // // 회원가입 - 아이디 중복 검사
+        // function checkId() {
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/users/checkId',
+        //         data: {
+        //             id: $('#id').val()
+        //         },
+        //         success: function(data, status) {
+        //             const duplicated = data.duplicated;
+        //             if (duplicated) {
+        //                 alert('이미 존재하는 아이디입니다');
+        //                 $('#id').val('')
+        //             } else {
+        //                 alert('사용할 수 있는 아이디입니다')
+        //             }
+        //         },
+        //         error: function(error) {
+        //             console.log(error)
+        //         }
+        //     });
+        // }
+        function moreInfo() {
+            if ($('#freelancer')[0].checked) {
+                $('fieldset.additional_form').show();
+                $('fieldset.additional_form input').prop('required', true);
+
+            } else {
+                $('fieldset.additional_form').hide();
+                $('fieldset.additional_form input').prop('required', false);
+            }
+        }
+        function addLanguage() {
+            $('fieldset.additional_form').append('<input type="text" name="language"><input type="number" name="competence" min="0" max="5"><br><br>');
+        }
+    </script>
+</head>
+<body>
+    <div class="register_form">
+        <h1>회원가입</h1><br><br>
+        <form id="register" action="/users/register" method="post" enctype="multipart/form-data">
+            회원유형:
+            <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
+            <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
+            아이디:
+            <input type="text" name="id" id="id" required><br><br>
+            <!--<input type="button" value="중복검사" onclick="checkId();"><br><br>-->
+            비밀번호:
+            <input type="password" name="pw" id="pw" required><br><br>
+            이름:
+            <input type="text" name="name" required><br><br>
+            휴대폰:
+            <input type="tel" name="tel" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
+            <fieldset class="additional_form" form="register" hidden>
+                나이:
+                <input type="number" name="age" min="0" max="200"><br><br>
+                개발 경력(년):
+                <input type="number" name="career" min="0" max="200"><br><br>
+                전공 학과:
+                <input type="text" name="major" required><br><br>
+                포트폴리오:
+                <input type="file" name="portfolio" required><br><br>
+                언어별 능숙도(0~5):
+                <input type="text" name="language" required>
+                <input type="number" name="competence" min="0" max="5">
+                <input type="button" value="언어 추가하기" onclick="addLanguage()"><br><br>
+            </fieldset>
+            <input type="submit" value="가입하기">
+        </form>
+    </div>
+</body>
+</html>
