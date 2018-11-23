@@ -18,4 +18,9 @@ router.post('/insert', wrapper.asyncMiddleware(async (req, res, next) =>{
     res.json({success: true});
 }));
 
+router.post('/login', (req, res, next) => {
+    console.log(req.body);
+    res.json({body: req.body});
+});
+
 module.exports = router;
