@@ -44,14 +44,32 @@
             }
         }
         function addLanguage() {
-            $('fieldset.additional_form').append('<input type="text" name="language"><input type="number" name="competence" min="0" max="5"><br><br>');
+            $('fieldset.additional_form').append('언어: <input type="text" name="language"> 능숙도: <input type="number" name="competence" min="0" max="5"><br><br>');
+        }
+        function uploadPortfolio() {
+            const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
+            form.append($('fileset.additional_form input[type="file"]'));
+            $(document.body).append(form);
+            form.submit();
+            // $.ajax({
+            //     type: 'post',
+            //     url: '/upload/portfolio',
+            //     enctype: 'multipart/form-data',
+            //     data: form,
+            //     success: function() {
+            //         console.log('portfolio uploaded');
+            //     },
+            //     error: function(error) {
+            //         console.log(error);
+            //     }
+            // });
         }
     </script>
 </head>
 <body>
     <div class="register_form">
         <h1>회원가입</h1><br><br>
-        <form id="register" action="/users/register" method="post" enctype="multipart/form-data">
+        <form id="register" action="/users/register" method="post"> <!--enctype="multipart/form-data"-->
             회원유형:
             <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
             <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
@@ -72,11 +90,13 @@
                 전공 학과:
                 <input type="text" name="major" required><br><br>
                 포트폴리오:
-                <input type="file" name="portfolio" required><br><br>
-                언어별 능숙도(0~5):
+                <input type="file" name="portfolio" onchange="uploadPortfolio();" required><br><br>
+                언어별 능숙도<br><br>
+                언어:
                 <input type="text" name="language" required>
+                능숙도(0~5):
                 <input type="number" name="competence" min="0" max="5">
-                <input type="button" value="언어 추가하기" onclick="addLanguage()"><br><br>
+                <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
             </fieldset>
             <input type="submit" value="가입하기">
         </form>

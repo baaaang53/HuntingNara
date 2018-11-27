@@ -8,13 +8,13 @@ const multer = require('multer');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'upload/')
+        cb(null, 'upload/');
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname)
+        cb(null, file.originalname);
     }
-})
-var upload = multer({ storage: storage })
+});
+var upload = multer({ storage: storage });
 
 // router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
 //     const user = await db.getQueryResult('SELECT * FROM test');
@@ -37,7 +37,9 @@ router.get('/register', (req, res, next) => {
 
 // 회원가입 - form submit
 router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(async (req, res, next) => {
-    res.json(req.file);
+    console.log(req.body);
+    console.log(req.file);
+    res.json(req.body);
 }));
 
 // 회원가입 - 아이디 중복 검사
