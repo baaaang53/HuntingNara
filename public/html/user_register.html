@@ -48,20 +48,7 @@
         function uploadPortfolio() {
             const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
             form.append($('fieldset.additional_form input[type="file"]'));
-            $(document.body).append(form);
-            // form.submit();
-            // $.ajax({
-            //     type: 'post',
-            //     url: '/upload/portfolio',
-            //     enctype: 'multipart/form-data',
-            //     data: form,
-            //     success: function() {
-            //         console.log('portfolio uploaded');
-            //     },
-            //     error: function(error) {
-            //         console.log(error);
-            //     }
-            // });
+            $(document.body).append(form)
         }
     </script>
 </head>
