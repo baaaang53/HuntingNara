@@ -10,9 +10,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-    function addLanguage() {
-    $('fieldset.additional_form').append('언어: <input type="text" name="language"> 능숙도: <input type="number" name="competence" min="0" max="5"><br><br>');
-    }
+        function addLanguage() {
+            $('fieldset.additional_form').append('언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
+        }
     </script>
 </head>
 <body>
@@ -24,9 +24,9 @@
             의뢰비용:
             <input type="number" name="cost" min="0" required>원<br><br>
             시작날짜:
-            <div><input type="date" name="s_date" value="2018-11-28" required></div><br><br>
+            <div><input type="date" name="s_date" value="2018-11-28" required></div><br>
             마감날짜:
-            <div><input type="date" name="e_date" value="2018-11-28" required></div><br><br>
+            <div><input type="date" name="e_date" value="2018-11-28" required></div><br>
             <!--의뢰문서:
             <input type="file" name="document" -->
             <strong>요구사항</strong><br>
