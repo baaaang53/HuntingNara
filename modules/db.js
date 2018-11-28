@@ -29,21 +29,21 @@ exports.getQueryResult = (sql) => {
 //         'ID',
 //         'CAREER'
 //         ],
-//     where: [{
+//     where: {
 //         NAME: 'john',
 //         AGE: 21
-//     }]
+//     }
 // }
 exports.select = (option) => {
     let sql = 'SELECT '
     for (const w of option.what) {
         sql += w + ', ';
     }
-    sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WEHRE ';
+    sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WHERE ';
     for (const key in option.where) {
-        sql += key + '="' + option.where[key] + '", ';
+        sql += key + '="' + option.where[key] + '" AND ';
     }
-    sql = sql.slice(0, -2) + ';';
+    sql = sql.slice(0, -5) + ';';
     console.log('==================== Query ==========================');
     console.log(sql);
     return new Promise( (resolve, reject) => {

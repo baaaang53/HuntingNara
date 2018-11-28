@@ -59,9 +59,9 @@ router.post('/checkId', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'USER',
         what: ['COUNT(ID)'],
-        where: [{
+        where: {
             ID: id
-        }]
+        }
     });
     res.json({duplicated: queryResult['COUNT(ID)'] != 0});
 }));
