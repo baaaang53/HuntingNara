@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function addLanguage() {
+            $('fieldset.language_form').append('언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
+        }
+    </script>
+</head>
+<body>
+    <div class ="req_register_form">
+        <h1>의뢰등록</h1><br><br>
+        <form id="req_reg" action="/request/register" method="post">
+            의뢰제목:
+            <input type="text" name="title" required><br><br>
+            의뢰비용:
+            <input type="number" name="cost" min="0" required>원<br><br>
+            시작날짜:
+            <div><input type="date" name="s_date" value="2018-11-28" required></div><br>
+            마감날짜:
+            <div><input type="date" name="e_date" value="2018-11-28" required></div><br>
+            <!--의뢰문서:
+            <input type="file" name="document" -->
+            <strong>요구사항</strong><br>
+            필요경력:
+            <input type="number" name="career" min="0" required>년<br><br>
+            <fieldset class="language_form" form="req_reg">
+                필요언어/능숙도:<br>
+                언어:
+                <input type="text" name="language">
+                능숙도(0~5):
+                <input type="number" name="competence" min="0" max="5">
+                <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
+            </fieldset>
+            <input type="submit" value="등록하기">
+
+        </form>
+    </div>
+</body>
+</html>
