@@ -38,13 +38,13 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
         const language = req.body.language;
         const competence = req.body.competence;
         const queryResult = await db.insert({
-            table: 'USER',
+            into: 'USER',
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
             values: [id, pw, phone, name, type, career, age, major]
         });
     } else {
         const queryResult = await db.insert({
-            table: 'USER',
+            into: 'USER',
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE'],
             values: [id, pw, phone, name, type]
         });
@@ -56,7 +56,13 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
 // 회원가입 - 아이디 중복 검사
 router.post('/checkId', wrapper.asyncMiddleware(async (req, res, next) => {
     const id = req.body.id;
-    const queryResult = await db.getQueryResult('SELECT COUNT(ID) FROM USER WHERE ID="' + id + '"');
+    const queryResult = await db.select({
+        from: 'USER',
+        what: ['COUNT(ID)'],
+        where: [{
+            ID: id
+        }]
+    });
     res.json({duplicated: queryResult['COUNT(ID)'] != 0});
 }));
 

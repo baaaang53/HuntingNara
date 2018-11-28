@@ -11,33 +11,32 @@
 
     <!-- javascript -->
     <script type="text/javascript">
-        // // 회원가입 - 아이디 중복 검사
-        // function checkId() {
-        //     $.ajax({
-        //         type: 'post',
-        //         url: '/users/checkId',
-        //         data: {
-        //             id: $('#id').val()
-        //         },
-        //         success: function(data, status) {
-        //             const duplicated = data.duplicated;
-        //             if (duplicated) {
-        //                 alert('이미 존재하는 아이디입니다');
-        //                 $('#id').val('')
-        //             } else {
-        //                 alert('사용할 수 있는 아이디입니다')
-        //             }
-        //         },
-        //         error: function(error) {
-        //             console.log(error)
-        //         }
-        //     });
-        // }
+        // 회원가입 - 아이디 중복 검사
+        function checkId() {
+            $.ajax({
+                type: 'post',
+                url: '/user/checkId',
+                data: {
+                    id: $('#id').val()
+                },
+                success: function(data, status) {
+                    const duplicated = data.duplicated;
+                    if (duplicated) {
+                        alert('이미 존재하는 아이디입니다');
+                        $('#id').val('')
+                    } else {
+                        alert('사용할 수 있는 아이디입니다')
+                    }
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        }
         function moreInfo() {
             if ($('#freelancer')[0].checked) {
                 $('fieldset.additional_form').show();
                 $('fieldset.additional_form input').prop('required', true);
-
             } else {
                 $('fieldset.additional_form').hide();
                 $('fieldset.additional_form input').prop('required', false);
@@ -69,13 +68,13 @@
 <body>
     <div class="register_form">
         <h1>회원가입</h1><br><br>
-        <form id="register" action="/users/register" method="post"> <!--enctype="multipart/form-data"-->
+        <form id="register" action="/user/register" method="post"> <!--enctype="multipart/form-data"-->
             회원유형:
             <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
             <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
             아이디:
             <input type="text" name="id" id="id" required><br><br>
-            <!--<input type="button" value="중복검사" onclick="checkId();"><br><br>-->
+            <input type="button" value="중복검사" onclick="checkId();"><br><br>
             비밀번호:
             <input type="password" name="pw" id="pw" required><br><br>
             이름:
