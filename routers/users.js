@@ -4,17 +4,6 @@ const router = express.Router();
 const path = require('path');
 const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
-const multer = require('multer');
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'upload/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
-var upload = multer({ storage: storage });
 
 // router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
 //     const user = await db.getQueryResult('SELECT * FROM test');
@@ -36,10 +25,26 @@ router.get('/register', (req, res, next) => {
 });
 
 // 회원가입 - form submit
-router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(async (req, res, next) => {
-    console.log(req.body);
-    console.log(req.file);
-    res.json(req.body);
+router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
+    const type = req.body.type;
+    const id = req.body.id;
+    const pw = req.body.pw;
+    const name = req.body.name;
+    const phone = req.body.phone;
+    if (type == 'freelancer') {
+        const age = req.body.age;
+        const career = req.body.career;
+        const major = req.body.major;
+        const language = req.body.language;
+        const competence = req.body.competence;
+        const queryResult = await db.insert({
+            table: 'USER',
+            attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
+            values: [id, pw, phone, name, type, career, age, major]
+        });
+    }
+    res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
+    // res.json(req.files);
 }));
 
 // 회원가입 - 아이디 중복 검사

@@ -48,9 +48,9 @@
         }
         function uploadPortfolio() {
             const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
-            form.append($('fileset.additional_form input[type="file"]'));
+            form.append($('fieldset.additional_form input[type="file"]'));
             $(document.body).append(form);
-            form.submit();
+            // form.submit();
             // $.ajax({
             //     type: 'post',
             //     url: '/upload/portfolio',
@@ -81,19 +81,19 @@
             이름:
             <input type="text" name="name" required><br><br>
             휴대폰:
-            <input type="tel" name="tel" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
+            <input type="phone" name="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
             <fieldset class="additional_form" form="register" hidden>
                 나이:
                 <input type="number" name="age" min="0" max="200"><br><br>
                 개발 경력(년):
                 <input type="number" name="career" min="0" max="200"><br><br>
                 전공 학과:
-                <input type="text" name="major" required><br><br>
+                <input type="text" name="major"><br><br>
                 포트폴리오:
-                <input type="file" name="portfolio" onchange="uploadPortfolio();" required><br><br>
+                <input type="file" name="portfolio" onchange="uploadPortfolio();"><br><br>
                 언어별 능숙도<br><br>
                 언어:
-                <input type="text" name="language" required>
+                <input type="text" name="language">
                 능숙도(0~5):
                 <input type="number" name="competence" min="0" max="5">
                 <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
