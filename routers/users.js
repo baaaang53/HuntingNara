@@ -21,7 +21,7 @@ const db = require('../modules/db');
 
 // 회원가입 - 사용자 정보 입력 페이지
 router.get('/register', (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/register.html'));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/user_register.html'));
 });
 
 // 회원가입 - form submit
@@ -41,6 +41,12 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
             table: 'USER',
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
             values: [id, pw, phone, name, type, career, age, major]
+        });
+    } else {
+        const queryResult = await db.insert({
+            table: 'USER',
+            attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE'],
+            values: [id, pw, phone, name, type]
         });
     }
     res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
