@@ -49,8 +49,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/public/html/user_register.html">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="253">
-                    <caret line="47" column="9" lean-forward="true" selection-start-line="45" selection-start-column="8" selection-end-line="47" selection-end-column="9" />
+                  <state relative-caret-position="-971">
+                    <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="33" />
                   </state>
                 </provider>
               </entry>
@@ -156,17 +156,17 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="createTable" value="53" />
-          <entry key="html" value="876" />
+          <entry key="html" value="1032" />
           <entry key="js" value="19" />
           <entry key="sql" value="1981" />
-          <entry key="txt" value="30" />
+          <entry key="txt" value="45" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="876" />
+          <entry key="HTML" value="1032" />
           <entry key="JavaScript" value="19" />
-          <entry key="PLAIN_TEXT" value="30" />
+          <entry key="PLAIN_TEXT" value="45" />
           <entry key="SQL" value="53" />
           <entry key="Scratch" value="1981" />
         </counts>
@@ -232,8 +232,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/html/req_register.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+            <state relative-caret-position="166">
+              <caret line="30" column="50" lean-forward="true" selection-start-line="30" selection-start-column="50" selection-end-line="30" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -377,7 +377,7 @@
       <workItem from="1542780325910" duration="631000" />
       <workItem from="1542794338290" duration="253000" />
       <workItem from="1543387719027" duration="2000" />
-      <workItem from="1543387750353" duration="2664000" />
+      <workItem from="1543387750353" duration="3263000" />
     </task>
     <task id="LOCAL-00001" summary="create table~!">
       <created>1542718610357</created>
@@ -407,11 +407,32 @@
       <option name="project" value="LOCAL" />
       <updated>1543388835525</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="req_register">
+      <created>1543390449564</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1543390449564</updated>
+    </task>
+    <task id="LOCAL-00006" summary="req_register">
+      <created>1543390583653</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1543390583653</updated>
+    </task>
+    <task id="LOCAL-00007" summary="req_register">
+      <created>1543390828971</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1543390828971</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12502000" />
+    <option name="totallyTimeSpent" value="13101000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="893" height="805" extended-state="0" />
@@ -476,7 +497,8 @@
     <MESSAGE value="create table~!" />
     <MESSAGE value="CASCADE ING" />
     <MESSAGE value="Merge branch 'master' of https://gitlab.com/ChoiJunSu/huntingnara&#10;&#10;# Conflicts:&#10;#&#9;config.js" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://gitlab.com/ChoiJunSu/huntingnara&#10;&#10;# Conflicts:&#10;#&#9;config.js" />
+    <MESSAGE value="req_register" />
+    <option name="LAST_COMMIT_MESSAGE" value="req_register" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/index.js">
@@ -617,15 +639,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/html/user_register.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="47" column="9" lean-forward="true" selection-start-line="45" selection-start-column="8" selection-end-line="47" selection-end-column="9" />
+        <state relative-caret-position="-971">
+          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="33" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/html/req_register.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+        <state relative-caret-position="166">
+          <caret line="30" column="50" lean-forward="true" selection-start-line="30" selection-start-column="50" selection-end-line="30" selection-end-column="50" />
         </state>
       </provider>
     </entry>
