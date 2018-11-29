@@ -64,7 +64,7 @@ router.post('/checkId', wrapper.asyncMiddleware(async (req, res, next) => {
             ID: id
         }
     });
-    res.json({duplicated: queryResult['COUNT(ID)'] != 0});
+    res.json({duplicated: queryResult[0]['COUNT(ID)'] != 0});
 }));
 
 router.post('/login', (req, res, next) => {

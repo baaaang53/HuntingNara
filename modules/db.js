@@ -14,13 +14,15 @@ exports.getQueryResult = (sql) => {
                 connection.release();
                 if (err) return reject(err);
                 console.log('==================== QueryResult ====================');
-                console.log(rows[0]);
+                console.log(rows);
                 console.log('=====================================================');
-                resolve(rows[0]);
+                resolve(rows);
             });
         });
     });
 };
+// return = []
+
 
 // select
 // option = {
@@ -39,11 +41,16 @@ exports.select = (option) => {
     for (const w of option.what) {
         sql += w + ', ';
     }
-    sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WHERE ';
-    for (const key in option.where) {
-        sql += key + '="' + option.where[key] + '" AND ';
+    if (option.where) {
+        sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WHERE ';
+        for (const key in option.where) {
+            sql += key + '="' + option.where[key] + '" AND ';
+        }
+        sql = sql.slice(0, -5) + ';';
+    } else {
+        sql = sql.slice(0, -2) + ' FROM ' + option.from + ';';
     }
-    sql = sql.slice(0, -5) + ';';
+
     console.log('==================== Query ==========================');
     console.log(sql);
     return new Promise( (resolve, reject) => {
@@ -53,13 +60,15 @@ exports.select = (option) => {
                 connection.release();
                 if (err) return reject(err);
                 console.log('==================== QueryResult ====================');
-                console.log(rows[0]);
+                console.log(rows);
                 console.log('=====================================================');
-                resolve(rows[0]);
+                resolve(rows);
             });
         });
     });
 };
+// return = []
+
 
 // insert
 // option = {
@@ -97,5 +106,6 @@ exports.insert = (option) => {
         });
     });
 };
+// return = 'success'
 
 
