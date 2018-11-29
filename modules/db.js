@@ -9,7 +9,7 @@ exports.getQueryResult = (sql) => {
     console.log(sql);
     return new Promise( (resolve, reject) => {
         connection.getConnection((err, connection) => {
-            if(err) return reject(err);
+            if (err) return reject(err);
             connection.query(sql, (err, rows) => {
                 connection.release();
                 if (err) return reject(err);
@@ -85,14 +85,14 @@ exports.insert = (option) => {
     console.log(sql);
     return new Promise( (resolve, reject) => {
         connection.getConnection((err, connection) => {
-            if(err) return reject(err);
+            if (err) return reject(err);
             connection.query(sql, (err, rows) => {
                 connection.release();
                 if (err) return reject(err);
                 console.log('==================== QueryResult ====================');
-                console.log(rows[0]);
+                console.log('success');
                 console.log('=====================================================');
-                resolve(rows[0]);
+                resolve('success');
             });
         });
     });

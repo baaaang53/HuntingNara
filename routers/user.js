@@ -20,9 +20,10 @@ const db = require('../modules/db');
 // }));
 
 // 회원가입 - 사용자 정보 입력 페이지
-router.get('/register', (req, res, next) => {
+router.get('/register', wrapper.asyncMiddleware(async (req, res, next) => {
+    // res.sendFile('../public/html/user_register.html');
     res.type('html').sendFile(path.join(__dirname, '../public/html/user_register.html'));
-});
+}));
 
 // 회원가입 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -31,26 +32,26 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const pw = req.body.pw;
     const name = req.body.name;
     const phone = req.body.phone;
+    let queryResult;
     if (type == 'freelancer') {
         const age = req.body.age;
         const career = req.body.career;
         const major = req.body.major;
         const language = req.body.language;
         const competence = req.body.competence;
-        const queryResult = await db.insert({
+        queryResult = await db.insert({
             into: 'USER',
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
             values: [id, pw, phone, name, type, career, age, major]
         });
     } else {
-        const queryResult = await db.insert({
+        queryResult = await db.insert({
             into: 'USER',
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE'],
             values: [id, pw, phone, name, type]
         });
     }
-    res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
-    // res.json(req.files);
+    res.json({success: queryResult=='success'});
 }));
 
 // 회원가입 - 아이디 중복 검사
