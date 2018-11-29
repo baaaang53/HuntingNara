@@ -9,6 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+
     <!-- javascript -->
     <script type="text/javascript">
         // 회원가입 - 아이디 중복 검사
@@ -20,12 +22,12 @@
                     id: $('#id').val()
                 },
                 success: function(data, status) {
-                    const duplicated = data.duplicated;
-                    if (duplicated) {
+                    if (data.duplicated) {
                         alert('이미 존재하는 아이디입니다');
                         $('#id').val('')
                     } else {
-                        alert('사용할 수 있는 아이디입니다')
+                        alert('사용할 수 있는 아이디입니다');
+                        $('#id').prop('readonly', true);
                     }
                 },
                 error: function(error) {
@@ -33,6 +35,7 @@
                 }
             });
         }
+
         function moreInfo() {
             if ($('#freelancer')[0].checked) {
                 $('fieldset.additional_form').show();
@@ -42,20 +45,56 @@
                 $('fieldset.additional_form input').prop('required', false);
             }
         }
+
         function addLanguage() {
             $('fieldset.additional_form').append('언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
         }
+
         function uploadPortfolio() {
+            if ($('#id').prop('readonly')) {
+                alert('아이디 중복검사를 먼저 해주세요');
+            }
             const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
             form.append($('fieldset.additional_form input[type="file"]'));
             $(document.body).append(form)
         }
+
+        function submitForm() {
+            if (!$('#id').prop('readonly')) {
+                alert('아이디 중복검사를 해주세요');
+                return false;
+            } else {
+                const formArray = $('#register').serializeArray();
+                const formObj = {};
+                for (let i=0; i<formArray.length; i++) {
+                    formObj[formArray[i]['name']] = formArray[i]['value'];
+                }
+                $.ajax({
+                    type: 'post',
+                    url: '/user/register',
+                    data: formObj,
+                    success: function(data, status) {
+                        if (data.success) {
+                            alert('회원가입이 완료되었습니다');
+                            location.href = '../';
+                        } else {
+                            alert('회원가입이 완료되지 않았습니다');
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert('회원가입이 완료되지 않았습니다');
+                    }
+                });
+            }
+        }
+
     </script>
 </head>
 <body>
     <div class="register_form">
         <h1>&emsp;&emsp;회원가입</h1><br><br>
-        <form id="register" action="/user/register" method="post"> <!--enctype="multipart/form-data"-->
+        <form id="register"> <!--action="/user/register" method="post" enctype="multipart/form-data" onsubmit="submitForm();"-->
             &emsp;회원유형:
             <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
             <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
@@ -84,7 +123,7 @@
                 <input type="number" name="competence" min="0" max="5">
                 <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
             </fieldset>
-            &emsp;<input type="submit" value="가입하기">
+            &emsp;<button type="button" onclick="submitForm();">가입하기</button>
         </form>
     </div>
 </body>
