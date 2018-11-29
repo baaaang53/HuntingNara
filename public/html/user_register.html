@@ -9,8 +9,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
-
     <!-- javascript -->
     <script type="text/javascript">
         // 회원가입 - 아이디 중복 검사
@@ -64,11 +62,15 @@
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
+
+
                 const formArray = $('#register').serializeArray();
                 const formObj = {};
                 for (let i=0; i<formArray.length; i++) {
                     formObj[formArray[i]['name']] = formArray[i]['value'];
                 }
+                console.log(formArray);
+                console.info(JSON.stringify(formObj));
                 $.ajax({
                     type: 'post',
                     url: '/user/register',
@@ -79,11 +81,13 @@
                             location.href = '../';
                         } else {
                             alert('회원가입이 완료되지 않았습니다');
+                            location.href = './register';
                         }
                     },
                     error: function(error) {
                         console.log(error);
                         alert('회원가입이 완료되지 않았습니다');
+                        location.href = './register';
                     }
                 });
             }
