@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function showAll() {
+            $.ajax({
+                type: 'post',
+                url: '/user/list',
+                data: {},
+                success: function(data) {
+                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#user_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>사용자 목록 보기</h1>
+<div>
+    <button type="button" onclick="showAll();">전체보기</button>
+</div>
+<div>
+    <table id="user_table" style="width: 100%;">
+        <tr>
+            <th>ID</th>
+            <th>유형</th>
+            <th>이름</th>
+            <th>핸드폰</th>
+            <th>평점</th>
+            <th>경력</th>
+            <th>나이</th>
+            <th>전공</th>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
