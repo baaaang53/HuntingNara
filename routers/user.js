@@ -27,10 +27,6 @@ router.get('/register', wrapper.asyncMiddleware(async (req, res, next) => {
 
 // 회원가입 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
-
-    // 왜 리스트로 안오지??
-
-    console.log(req.body);
     const type = req.body.type;
     const id = req.body.id;
     const pw = req.body.pw;

@@ -63,16 +63,10 @@
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
-                console.log('#register');
-                const formArray = $('#register').serializeArray();
-                const formObj = {};
-                for (let i=0; i<formArray.length; i++) {
-                    formObj[formArray[i]['name']] = formArray[i]['value'];
-                }
                 $.ajax({
                     type: 'post',
                     url: '/user/register',
-                    data: formObj,
+                    data: $('#register').serialize(),
                     success: function(data, status) {
                         if (data.success) {
                             alert('회원가입이 완료되었습니다');
