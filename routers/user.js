@@ -27,6 +27,10 @@ router.get('/register', wrapper.asyncMiddleware(async (req, res, next) => {
 
 // 회원가입 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
+
+    // 왜 리스트로 안오지??
+
+    console.log(req.body);
     const type = req.body.type;
     const id = req.body.id;
     const pw = req.body.pw;
@@ -44,6 +48,17 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
             values: [id, pw, phone, name, type, career, age, major]
         });
+        if (queryResult == 'success') {
+            for (let i=0; i<language.length; i++) {
+                if (language[i]) {
+                    queryResult = await db.insert({
+                        into: 'F_ABILITY',
+                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                        values: [id, language[i], competence[i]],
+                    });
+                }
+            }
+        }
     } else {
         queryResult = await db.insert({
             into: 'USER',

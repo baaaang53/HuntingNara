@@ -49,8 +49,9 @@
         }
 
         function uploadPortfolio() {
-            if ($('#id').prop('readonly')) {
+            if (!$('#id').prop('readonly')) {
                 alert('아이디 중복검사를 먼저 해주세요');
+                return false;
             }
             const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
             form.append($('fieldset.additional_form input[type="file"]'));
@@ -62,15 +63,12 @@
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
-
-
+                console.log('#register');
                 const formArray = $('#register').serializeArray();
                 const formObj = {};
                 for (let i=0; i<formArray.length; i++) {
                     formObj[formArray[i]['name']] = formArray[i]['value'];
                 }
-                console.log(formArray);
-                console.info(JSON.stringify(formObj));
                 $.ajax({
                     type: 'post',
                     url: '/user/register',
