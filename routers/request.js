@@ -12,7 +12,7 @@ router.get('/register', (req, res, next) => {
 
 // 의뢰등록 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
-    const cId = 'admin';
+    const cId = 'admin'; //나중에 할 곳
     const title = req.body.title;
     const cost = req.body.cost;
     const s_date = req.body.s_date;
@@ -22,8 +22,8 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const competence = req.body.competence;
     let queryResult = await db.insert({
         into: 'REQUEST',
-        attributes: ['C_ID', 'TITLE', 'COST', 'S_DATE', 'E_DATE', 'CAREER'],
-        values: [cId, title, cost, s_date, e_date, career]
+        attributes: ['C_ID','F_ID', 'TITLE', 'COST', 'S_DATE', 'E_DATE', 'CAREER'],
+        values: [cId, "admin", title, cost, s_date, e_date, career]
     });
     queryResult = await db.getQueryResult('SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId + '" ORDER BY R_NUM DESC LIMIT 1;');
     const requestNum = queryResult[0]['R_NUM'];
