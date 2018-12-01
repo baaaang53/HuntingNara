@@ -44,6 +44,17 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
             attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
             values: [id, pw, phone, name, type, career, age, major]
         });
+        if (queryResult == 'success') {
+            for (let i=0; i<language.length; i++) {
+                if (language[i]) {
+                    queryResult = await db.insert({
+                        into: 'F_ABILITY',
+                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                        values: [id, language[i], competence[i]],
+                    });
+                }
+            }
+        }
     } else {
         queryResult = await db.insert({
             into: 'USER',

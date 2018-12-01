@@ -13,12 +13,34 @@
         function addLanguage() {
             $('fieldset.language_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
         }
+
+        function submitForm() {
+            $.ajax({
+                type: 'post',
+                url: '/request/register',
+                data: $('#req_reg').serialize(),
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('의뢰등록이 완료되었습니다');
+                        location.href = '../';
+                    } else {
+                        alert('의뢰등록이 완료되지 않았습니다');
+                        location.href = './register';
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('의뢰등록 완료되지 않았습니다');
+                    location.href = './register';
+                }
+            });
+        }
     </script>
 </head>
 <body>
     <div class ="req_register_form">
         <h1>&emsp;&emsp;의뢰등록</h1><br><br>
-        <form id="req_reg" action="/request/register" method="post">
+        <form id="req_reg">
             &emsp;의뢰제목:
             <input type="text" name="title" required><br><br>
             &emsp;의뢰비용:
@@ -40,7 +62,7 @@
                 <input type="number" name="competence" min="0" max="5">
                 <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
             </fieldset>
-            &emsp;<input type="submit" value="등록하기">
+            &emsp;<button type="button" onclick="submitForm();">등록하기</button>
         </form>
     </div>
 </body>

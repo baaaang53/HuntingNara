@@ -12,6 +12,7 @@ router.get('/register', (req, res, next) => {
 
 // 의뢰등록 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
+    const cId = 'admin';
     const title = req.body.title;
     const cost = req.body.cost;
     const s_date = req.body.s_date;
@@ -19,13 +20,23 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const career = req.body.career;
     const language = req.body.language;
     const competence = req.body.competence;
-    const queryResult = await db.insert({
+    let queryResult = await db.insert({
         into: 'REQUEST',
         attributes: ['C_ID', 'TITLE', 'COST', 'S_DATE', 'E_DATE', 'CAREER'],
-        values: ['admin', title, cost, s_date, e_date, career]
+        values: [cId, title, cost, s_date, e_date, career]
     });
-
-    res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
+    queryResult = await db.getQueryResult('SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId + '" ORDER BY R_NUM DESC LIMIT 1;');
+    const requestNum = queryResult[0]['R_NUM'];
+    for (let i=0; i<language.length; i++) {
+        if (language[i]) {
+            queryResult = await db.insert({
+                into: 'REQ_ABILITY',
+                attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
+                values: [requestNum, language[i], competence[i]],
+            });
+        }
+    }
+    res.json({success: queryResult=='success'});
 }));
 
 // 의뢰 목록 페이지
