@@ -39,14 +39,20 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json({success: queryResult=='success'});
 }));
 
-// 의뢰 목록 페이지
+// 의뢰 목록 페이지 _관리자
 router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list.html'));
 }));
 
+// 의뢰 목록 페이지 _ 프리랜서
+router.get('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_freelancer.html'));
+}));
 
-//~~~~~~~~~~~~질문~~~~~~~~~이 router.get은 freelancer, client 안 만들고 그냥 하나로 쓰는 거 맞지?!?!?
-
+// 의뢰 목록 페이지 _ 의뢰자
+router.get('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_client.html'));
+}));
 
 
 // 의뢰 목록 요청 _ 관리자
@@ -59,21 +65,30 @@ router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 // 의뢰 목록 요청 _ 프리랜서
-router.post('/freelancer/list', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where: { F_ID :"admin"} //수정필요
+        where: { F_ID :"admin"} //수정필요 _ 현재 로그인 정보
     });
     res.json(queryResult);
 }));
 
-// 의뢰 목록 요청 _ 의뢰자
-router.post('/client/list', wrapper.asyncMiddleware(async (req, res, next) => {
+// 지원가능 의뢰 목록 요청 _ 프리랜서
+router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where : { C_ID : "admin"} //수정 필요
+        where:{F_ID:"admin"} // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~조건을 어떻게 달아야 하는 건가요
+    });
+    res.json(queryResult);
+}))
+// 의뢰 목록 요청 _ 의뢰자
+router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where : {C_ID : "admin"} //수정 필요 _ 현재 로그인 정보
     });
     res.json(queryResult);
 }));

@@ -10,11 +10,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        function showAll() {
+
+        function show_client() {
             $('#request_table').find('tr:gt(0)').remove()
             $.ajax({
                 type: 'post',
-                url: '/request/list',
+                url: '/request/list/client',
                 data: {},
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
@@ -33,23 +34,24 @@
                 }
             });
         }
+
     </script>
 </head>
 <body>
-    <h1>의뢰 목록 보기</h1>
-    <div>
-        <button type="button" onclick="showAll();">의뢰조회</button>
-    </div>
-    <div>
-        <table id="request_table" style="width: 100%;">
-            <tr>
-                <th>제목</th>
-                <th>시작</th>
-                <th>종료</th>
-                <th>비용</th>
-                <th>요구경력</th>
-            </tr>
-        </table>
-    </div>
+<h1>의뢰 목록 보기</h1>
+<div>
+    <button type="button" onclick="show_client();">의뢰조회</button>
+</div>
+<div>
+    <table id="request_table" style="width: 100%;">
+        <tr>
+            <th>제목</th>
+            <th>시작</th>
+            <th>종료</th>
+            <th>비용</th>
+            <th>요구경력</th>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
