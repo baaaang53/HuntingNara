@@ -83,4 +83,18 @@ router.post('/login', (req, res, next) => {
     res.json({body: req.body});
 });
 
+// 사용자 목록 페이지
+router.get('/list', wrapper.asyncMiddleware(async (req, res, next)=> {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/user_list.html'));
+}));
+
+// 사용자 목록 요청
+router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryResult = await db.select({
+        from: 'USER',
+        what: ['*']
+    });
+    res.json(queryResult);
+}));
+
 module.exports = router;

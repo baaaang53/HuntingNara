@@ -32,12 +32,59 @@
                 }
             });
         }
+        function show_client() {
+            $.ajax({
+                type: 'post',
+                url: '/request/client/list',
+                data: {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                            console.log(col)
+                            console.log(typeof col)
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+        function show_freelancer() {
+            $.ajax({
+                type: 'post',
+                url: '/request/freelancer/list',
+                data: {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
     </script>
 </head>
 <body>
     <h1>의뢰 목록 보기</h1>
     <div>
-        <button type="button" onclick="showAll();">전체보기</button>
+        <!-- 여기에 if문으로 현재 로그인중인 계정 따라 구분, showAll/show_freelancer/show_client -->
+        <button type="button" onclick="show_freelancer();">의뢰조회</button>
     </div>
     <div>
         <table id="request_table" style="width: 100%;">
