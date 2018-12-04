@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+        function show_freelancer() {
+            $('#request_table').find('tr:gt(0)').remove()
+            $.ajax({
+                type: 'post',
+                url: '/request/list/freelancer',
+                data: {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+
+        function show_possible() {
+            $('#request_table').find('tr:gt(0)').remove()
+            $.ajax({
+                type: 'post',
+                url: '/request/list/freelancer/possible',
+                data : {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+
+        function sortcost() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[3];
+                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    //x = parseInt(x);
+                    //y = parseInt(y);
+                    if (x.innerHTML > y.innerHTML) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function sortcost_rev() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[3];
+                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    //x = parseInt(x);
+                    //y = parseInt(y);
+                    if (x.innerHTML < y.innerHTML) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<h1>의뢰 목록 보기</h1>
+<div>
+    <button type="button" onclick="show_freelancer();">의뢰조회</button>
+    <button type="button" onclick="show_possible();">지원가능한 의뢰보기</button>
+</div>
+<div>
+    <table id="request_table" style="width: 100%;">
+        <tr>
+            <th>제목</th>
+            <th>시작</th>
+            <th>종료</th>
+            <th>비용 <button onclick="sortcost();">▲</button>
+            <button onclick="sortcost_rev();">▼</button></th>
+            <th>요구경력</th>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
