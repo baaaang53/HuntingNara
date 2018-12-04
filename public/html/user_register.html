@@ -54,7 +54,8 @@
                 return false;
             }
             const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
-            form.append($('fieldset.additional_form input[type="file"]'));
+            form.append($('fieldset.ad' +
+                'ditional_form input[type="file"]'));
             $(document.body).append(form)
         }
 

@@ -59,6 +59,13 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_registered.html'));
 }));
 
+// 완료 요청 페이지
+router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
+}));
+
+
+
 
 // 의뢰 목록 요청 _ 관리자
 router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -97,7 +104,7 @@ router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res,
         where:{F_ID:"admin"} // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~조건을 어떻게 달아야 하는 건가요
     });
     res.json(queryResult);
-}))
+}));
 
 // 의뢰 목록 요청 _ 의뢰자
 router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {

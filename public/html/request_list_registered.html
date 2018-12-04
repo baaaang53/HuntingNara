@@ -18,7 +18,7 @@
                 url: '/request/list/registered',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER',' STATE'];
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
