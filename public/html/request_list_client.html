@@ -18,7 +18,7 @@
                 url: '/request/list/client',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
@@ -146,6 +146,7 @@
             <th>비용 <button onclick="sortcost();">▲</button>
                 <button onclick="sortcost_rev();">▼</button></th>
             <th>요구경력</th>
+            <th>의뢰상태</th>
         </tr>
     </table>
 </div>

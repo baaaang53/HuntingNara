@@ -13,6 +13,7 @@ router.get('/register', (req, res, next) => {
 // 의뢰등록 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const cId = 'admin'; //나중에 할 곳
+    //const state = 'registered'; //이거 없었는데 의뢰목록 보기 할 때 상태가 안 나와서 추가해놓음. 근데 안 됨.
     const title = req.body.title;
     const cost = req.body.cost;
     const s_date = req.body.s_date;
@@ -74,7 +75,7 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
     res.json(queryResult);
 }));
 
-// 지원가능 의뢰 목록 요청 _ 프리랜서
+// 지원가능 의뢰 목록 요청 _ 프리랜서(possible)
 router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const queryResult = await db.select({
         from: 'REQUEST',
