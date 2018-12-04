@@ -11,11 +11,11 @@
 
     <script type="text/javascript">
 
-        function show_freelancer() {
+        function show_registered() {
             $('#request_table').find('tr:gt(0)').remove()
             $.ajax({
                 type: 'post',
-                url: '/request/list/freelancer',
+                url: '/request/list/registered',
                 data: {},
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
@@ -35,6 +35,29 @@
             });
         }
 
+        function show_possible() {
+            $('#request_table').find('tr:gt(0)').remove()
+            $.ajax({
+                type: 'post',
+                url: '/request/list/freelancer/possible',
+                data : {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
 
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
@@ -133,9 +156,10 @@
     </script>
 </head>
 <body>
-<h1>내 의뢰 보기</h1>
+<h1>의뢰 지원하기</h1>
 <div>
-    <button type="button" onclick="show_freelancer();">내의뢰보기</button>
+    <button type="button" onclick="show_registered();">의뢰조회</button>
+    <button type="button" onclick="show_possible();">지원가능한 의뢰보기</button>
 </div>
 <div>
     <table id="request_table" style="width: 100%;">
@@ -145,7 +169,7 @@
                 <button onclick="sortdate_rev();">▼</button></th>
             <th>종료</th>
             <th>비용 <button onclick="sortcost();">▲</button>
-            <button onclick="sortcost_rev();">▼</button></th>
+                <button onclick="sortcost_rev();">▼</button></th>
             <th>요구경력</th>
             <th>의뢰상태</th>
         </tr>
