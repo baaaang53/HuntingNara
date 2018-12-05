@@ -19,6 +19,9 @@ var upload = multer({ storage: storage });
 // 회원가입 - 외부 포트폴리오 저장
 router.post('/portfolio', upload.single('portfolio'), (req, res, next) => {
     // res.json(req.file);
+    console.log(req.body);
+    console.log(req.file);
+    console.log(req.files);
 });
 
 module.exports = router;

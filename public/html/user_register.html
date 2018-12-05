@@ -38,9 +38,13 @@
             if ($('#freelancer')[0].checked) {
                 $('fieldset.additional_form').show();
                 $('fieldset.additional_form input').prop('required', true);
+                $('#portfolio_form').show();
+                $('#portfolio_form input[type="file"]').prop('required', true);
             } else {
                 $('fieldset.additional_form').hide();
                 $('fieldset.additional_form input').prop('required', false);
+                $('#portfolio_form').hide();
+                $('#portfolio_form input[type="file"]').prop('required', false);
             }
         }
 
@@ -48,21 +52,28 @@
             $('fieldset.additional_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
         }
 
-        function uploadPortfolio() {
-            if (!$('#id').prop('readonly')) {
-                alert('아이디 중복검사를 먼저 해주세요');
-                return false;
-            }
-            const form = $('<form>', {action: "/upload/portfolio", method: 'post', enctype: "multipart/form-data"});
-            form.append($('fieldset.additional_form input[type="file"]'));
-            $(document.body).append(form)
-        }
-
         function submitForm() {
             if (!$('#id').prop('readonly')) {
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
+                $('#portfolio_form input[type="text"]').val($('#id').val());
+                console.log(JSON.stringify($('#portfolio_form')));
+                $.ajax({
+                    type: 'post',
+                    enctype: 'multipart/form-data',
+                    url: '/upload/portfolio',
+                    data: $('#portfolio_form').serialize(),
+                    succes: function(data, status) {
+                        console.log(data);
+                    },
+                    error: function(err) {
+                        console.log(err);
+                        alert('회원가입이 완료되지 않았습니다');
+                        location.href = './register';
+                        return;
+                    }
+                });
                 $.ajax({
                     type: 'post',
                     url: '/user/register',
@@ -74,12 +85,14 @@
                         } else {
                             alert('회원가입이 완료되지 않았습니다');
                             location.href = './register';
+                            return;
                         }
                     },
                     error: function(error) {
                         console.log(error);
                         alert('회원가입이 완료되지 않았습니다');
                         location.href = './register';
+                        return false;
                     }
                 });
             }
@@ -110,8 +123,6 @@
                 <input type="number" name="career" min="0" max="200"><br><br>
                 &emsp;전공 학과:
                 <input type="text" name="major"><br><br>
-                &emsp;포트폴리오:
-                <input type="file" name="portfolio" onchange="uploadPortfolio();"><br><br>
                 &emsp;언어별 능숙도<br><br>
                 &emsp;언어:
                 <input type="text" name="language">
@@ -119,8 +130,14 @@
                 <input type="number" name="competence" min="0" max="5">
                 <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
             </fieldset>
-            &emsp;<button type="button" onclick="submitForm();">가입하기</button>
+            <input type="text" name="portfolio" id="portfolio" hidden>
         </form>
+        <form id="portfolio_form">
+            &emsp;포트폴리오:
+            <input type="file" name="portfolio"><br><br>
+            <input type="text" name="id" hidden>
+        </form>
+        &emsp;<button type="button" onclick="submitForm();">가입하기</button>
     </div>
 </body>
 </html>

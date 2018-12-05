@@ -4,6 +4,7 @@ const router = express.Router();
 const path = require('path');
 const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
+const url = require('url');
 
 // 의뢰등록 - 의뢰 정보 입력 페이지
 router.get('/register', (req, res, next) => {
@@ -83,6 +84,7 @@ router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res,
     });
     res.json(queryResult);
 }))
+
 // 의뢰 목록 요청 _ 의뢰자
 router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
@@ -91,6 +93,18 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
         where : {C_ID : "admin"} //수정 필요 _ 현재 로그인 정보
     });
     res.json(queryResult);
+}));
+
+// 의뢰 상세보기
+router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryObject = url.parse(req.url, true).query;
+    const rNum = queryObject['rNum'];
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where: {R_NUM: rNum}
+    });
+    res.json(queryResult[0]);
 }));
 
 module.exports = router;
