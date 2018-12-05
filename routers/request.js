@@ -67,7 +67,7 @@ router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
 
 
 // 의뢰 상세보기
-router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+/*router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryObject = url.parse(req.url, true).query;
     const rNum = queryObject['rNum'];
     const queryResult1 = await db.select({
@@ -91,7 +91,7 @@ router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
         reqAbility: queryResult3
     }
     res.json(result);
-}));
+}));*/
 
 
 // 의뢰 목록 요청 _ 관리자
@@ -160,10 +160,27 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
 //     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
 // }));
 
-router.post('/detail/admin', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
+    const queryResult = await db.select({
+        from: 'REQ_DOC',
+        what : ['*'],
+        where: {R_NUM :rNum}
+    });
+    const queryResult2 = await db.select({
+        from: 'REQ_ABILITY',
+        what : ['*'],
+        where: {R_NUM :rNum}
+    });
+
+    const result = {
+        req_doc : queryResult,
+        req_ability : queryResult2
+    }
+
     console.log(rNum);
-    res.json({rNum: rNum});
+    res.json(result);
 }));
+
 
 module.exports = router;
