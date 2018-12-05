@@ -24,4 +24,9 @@ router.post('/portfolio', upload.single('portfolio'), (req, res, next) => {
     console.log(req.files);
 });
 
+// 의뢰 완료 요청 - 보고서 제출
+router.post('/report', upload.single('report'), (req, res, next) => {
+    //res.json(req.file);
+});
+
 module.exports = router;

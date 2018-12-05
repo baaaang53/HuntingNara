@@ -17,7 +17,7 @@
                 url: '/request/list',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
@@ -84,7 +84,7 @@
 <body>
     <h1>의뢰 목록 보기</h1>
     <div>
-        <button type="button" onclick="showAll();">의뢰조회</button>
+        <button type="button" onclick="showAll();">의뢰조회</button><br>
     </div>
     <div>
         <table id="request_table" style="width: 100%;">
@@ -94,6 +94,7 @@
                 <th>종료</th>
                 <th>비용</th>
                 <th>요구경력</th>
+                <th>의뢰상태</th>
             </tr>
         </table>
     </div>

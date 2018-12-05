@@ -55,6 +55,18 @@ router.get('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_client.html'));
 }));
 
+// registered 의뢰 목록 페이지 _ 의뢰 지원하기
+router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_registered.html'));
+}));
+
+// 완료 요청 페이지
+router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
+}));
+
+
+
 
 // 의뢰 목록 요청 _ 관리자
 router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -75,7 +87,17 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
     res.json(queryResult);
 }));
 
-// 지원가능 의뢰 목록 요청 _ 프리랜서
+//모집중인 의뢰 보기
+router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where: { STATE :"registered"} //수정필요 _ 현재 로그인 정보
+    });
+    res.json(queryResult);
+}));
+
+// 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력
 router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const queryResult = await db.select({
         from: 'REQUEST',
