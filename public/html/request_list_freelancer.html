@@ -20,9 +20,9 @@
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER'];
                     for (const row of data) {
-                        let newTr = '<tr>';
+                        let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'http://localhost:3000/request/detail?rNum='+ row['R_NUM'] +'\')">' + row[col] + '</td>';
+                            newTr += '<td>' + row[col] + '</td>';
                         }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
@@ -35,6 +35,19 @@
             });
         }
 
+        function getDetail(rNum) {
+            $.ajax({
+                type: 'post',
+                url: '/request/detail',
+                data: {rNum: rNum},
+                success: function(data, status) {
+                    $('#request_table tr:eq(' + rNum + ')').after('<tr><td>' + rNum + '번째 detail<br><br><br></td></tr>');
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
 
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
@@ -134,7 +147,7 @@
     </script>
 </head>
 <body>
-<h1>내 의뢰 보기</h1>
+<h1  style = "text-align: center;">내 의뢰 보기</h1>
 <div>
     <button type="button" onclick="show_freelancer();">내의뢰보기</button>
 </div>

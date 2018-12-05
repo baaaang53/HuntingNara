@@ -37,7 +37,7 @@
         function getDetail(rNum) {
             $.ajax({
                 type: 'post',
-                url: '/request/detail/admin',
+                url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
                     $('#request_table tr:eq(' + rNum + ')').after('<tr><td>' + rNum + '번째 detail<br><br><br></td></tr>');
@@ -47,11 +47,103 @@
                 }
             });
         }
+        function sortcost() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
 
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[3];
+                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    if (parseInt(x.innerHTML) > parseInt(y.innerHTML)) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function sortcost_rev() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[3];
+                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    if (parseInt(x.innerHTML) < parseInt(y.innerHTML)) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function sortdate() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
+
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[1];
+                    y = rows[i + 1].getElementsByTagName("TD")[1];
+                    if (x.innerHTML > y.innerHTML) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function sortdate_rev() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("request_table");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[1];
+                    y = rows[i + 1].getElementsByTagName("TD")[1];
+                    if (x.innerHTML < y.innerHTML) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
     </script>
 </head>
 <body>
-    <h1>의뢰 목록 보기</h1>
+    <h1  style = "text-align: center;">의뢰 목록 보기</h1>
     <div>
         <button type="button" onclick="showAll();">의뢰조회</button><br>
     </div>
@@ -59,9 +151,11 @@
         <table id="request_table" style="width: 100%;">
             <tr>
                 <th>제목</th>
-                <th>시작</th>
+                <th>시작<button onclick="sortdate();">▲</button>
+                    <button onclick="sortdate_rev();">▼</button></th>
                 <th>종료</th>
-                <th>비용</th>
+                <th>비용 <button onclick="sortcost();">▲</button>
+                    <button onclick="sortcost_rev();">▼</button></th>
                 <th>요구경력</th>
                 <th>의뢰상태</th>
             </tr>
