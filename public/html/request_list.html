@@ -40,7 +40,11 @@
                 url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
-                    $('#request_table tr:eq(' + rNum + ')').after('<tr><td>' + rNum + '번째 detail<br><br><br></td></tr>');
+                    console.log(JSON.stringify(data));
+                    // 여기서 data 자리에 엘리먼트 집어넣으면 됨
+                    // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
+                    $('div .modal-body').innerHTML = data;
+                    $('#detail_modal').modal('show');
                 },
                 error: function(err) {
                     console.log(err);
@@ -160,6 +164,20 @@
                 <th>의뢰상태</th>
             </tr>
         </table>
+    </div>
+    <!--여기가 팝업 부분 - 평소엔 안보이다가 getDetail 함수에서 show 하면 팝업으로 올라옴-->
+    <!--내용은 modal-body 에 넣으면 됨-->
+    <div id="detail_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    의뢰 상세보기
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

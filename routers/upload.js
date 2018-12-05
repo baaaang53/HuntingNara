@@ -32,8 +32,13 @@ router.post('/portfolio', upload.single('portfolio'), wrapper.asyncMiddleware(as
 // 의뢰 등록 - 의뢰문서 저장
 router.post('/req_doc', upload.array('req_doc'), wrapper.asyncMiddleware(async (req, res, next) => {
     console.log(req.files);
+    let queryResult;
     for (const file of req.files) {
-
+        queryResult = await db.insert({
+            into: 'REQ_DOC',
+            attributes: ['R_NUM', 'FILE'],
+            values: []
+        });
     }
     // 세션 아이디 필요!
 }));
