@@ -147,5 +147,23 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(queryResult);
 }));
 
+// // 의뢰 상세보기
+// router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+//     const queryObject = url.parse(req.url, true).query;
+//     const rNum = queryObject['rNum'];
+//     const queryResult = await db.select({
+//         from: 'REQUEST',
+//         what: ['*'],
+//         where: {R_NUM: rNum}
+//     });
+//     // res.json(queryResult[0]);
+//     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
+// }));
+
+router.post('/detail/admin', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    console.log(rNum);
+    res.json({rNum: rNum});
+}));
 
 module.exports = router;
