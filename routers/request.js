@@ -66,6 +66,32 @@ router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 
+// 의뢰 상세보기
+router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryObject = url.parse(req.url, true).query;
+    const rNum = queryObject['rNum'];
+    const queryResult1 = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where: {R_NUM: rNum}
+    });
+    const queryResult2 = await db.select({
+        from: 'REQ_DOC',
+        what: ['*'],
+        where: {R_NUM: rNum}
+    });
+    const queryResult3 = await db.select({
+        from: 'REQ_ABILITY',
+        what: ['*'],
+        where: {R_NUM: rNum}
+    });
+    const result = {
+        request: queryResult1,
+        reqDoc: queryResult2,
+        reqAbility: queryResult3
+    }
+    res.json(result);
+}));
 
 
 // 의뢰 목록 요청 _ 관리자
@@ -77,6 +103,7 @@ router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(queryResult);
 }));
 
+
 // 의뢰 목록 요청 _ 프리랜서
 router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
@@ -86,6 +113,7 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
     });
     res.json(queryResult);
 }));
+
 
 //모집중인 의뢰 보기
 router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -97,6 +125,7 @@ router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =
     res.json(queryResult);
 }));
 
+
 // 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력
 router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const queryResult = await db.select({
@@ -105,7 +134,8 @@ router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res,
         where:{F_ID:"admin"} // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~조건을 어떻게 달아야 하는 건가요
     });
     res.json(queryResult);
-}))
+}));
+
 
 // 의뢰 목록 요청 _ 의뢰자
 router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {

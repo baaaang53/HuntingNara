@@ -25,6 +25,35 @@ router.get('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/user_register.html'));
 }));
 
+router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryObject = url.parse(req.url, true).query;
+    const ID = queryObject['ID'];
+    const queryResult1 = await db.select({
+        from: 'F_ABILITY',
+        what: ['*'],
+        where: {ID: ID}
+    });
+    const queryResult2 = await db.select({
+        from: 'OUTER_PORTFOLIO',
+        what: ['*'],
+        where: {F_ID: ID}
+    });
+    const queryResult3 = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where: {F_ID: ID,
+                STATE : "complete"} // innerportfolio
+    });
+    const result = {
+        ability: queryResult1,
+        outerportfolio: queryResult2,
+        innerportfolio: queryResult3
+    }
+    res.json(result);
+}));
+
+
+
 // 회원가입 - form submit
 router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const type = req.body.type;
