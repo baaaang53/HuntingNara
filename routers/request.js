@@ -60,10 +60,6 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_registered.html'));
 }));
 
-// 완료 요청 페이지
-router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
-}));
 
 
 // 의뢰 상세보기
@@ -182,5 +178,7 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(result);
 }));
 
-
+router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next)=> {
+    //REQUEST에서 해당 r_num의 state를 c_requesting으로 바꾸기
+}))
 module.exports = router;
