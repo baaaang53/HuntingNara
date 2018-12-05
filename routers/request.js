@@ -109,7 +109,7 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where: { F_ID :"admin"} //수정필요 _ 현재 로그인 정보
+        where: { F_ID : "admin"} //수정필요 _ 현재 로그인 정보
     });
     res.json(queryResult);
 }));
