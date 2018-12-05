@@ -20,6 +20,8 @@
                 url: '/request/register',
                 data: $('#req_reg').serialize(),
                 success: function(data, status) {
+                    console.log('onsuccess');
+                    console.log(data);
                     if (data.success) {
                         alert('의뢰등록이 완료되었습니다');
                         location.href = '../';

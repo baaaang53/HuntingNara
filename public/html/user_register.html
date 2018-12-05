@@ -62,8 +62,11 @@
                 $.ajax({
                     type: 'post',
                     enctype: 'multipart/form-data',
+                    async: false,
+                    processData: false,
+                    contentType: false,
                     url: '/upload/portfolio',
-                    data: $('#portfolio_form').serialize(),
+                    data: $('#portfolio_form'),
                     succes: function(data, status) {
                         console.log(data);
                     },
@@ -76,6 +79,7 @@
                 });
                 $.ajax({
                     type: 'post',
+                    async: false,
                     url: '/user/register',
                     data: $('#register').serialize(),
                     success: function(data, status) {
@@ -132,7 +136,7 @@
             </fieldset>
             <input type="text" name="portfolio" id="portfolio" hidden>
         </form>
-        <form id="portfolio_form">
+        <form id="portfolio_form" enctype="multipart/form-data">
             &emsp;포트폴리오:
             <input type="file" name="portfolio"><br><br>
             <input type="text" name="id" hidden>
