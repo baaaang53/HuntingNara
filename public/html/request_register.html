@@ -14,6 +14,10 @@
             $('fieldset.language_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
         }
 
+        function addReqDoc() {
+            $('#req_doc_form input[type="submit"]').before('<input type="file" name="req_doc"><br><br>');
+        }
+
         function submitForm() {
             $.ajax({
                 type: 'post',
@@ -51,8 +55,6 @@
             <input type="date" name="s_date" value="2018-11-28" required><br><br>
             &emsp;마감날짜:
             <input type="date" name="e_date" value="2018-11-28" required><br><br>
-            <!--의뢰문서:
-            <input type="file" name="document" -->
             &emsp;<strong>요구사항</strong><br>
             &emsp;필요경력:
             <input type="number" name="career" min="0" required>년<br><br>
@@ -62,9 +64,14 @@
                 <input type="text" name="language">
                 능숙도(0~5):
                 <input type="number" name="competence" min="0" max="5">
-                <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
+                <input type="button" value="+" onclick="addLanguage();"><br><br>
             </fieldset>
-            &emsp;<button type="button" onclick="submitForm();">등록하기</button>
+        </form>
+        <form id="req_doc_form" method="post" enctype="multipart/form-data" action="/upload/req_doc" onsubmit="submitForm();">
+            &emsp;의뢰문서:
+            <input type="file" name="req_doc">
+            <input type="button" value="+" onclick="addReqDoc();"><br><br>
+            <input type="submit" value="등록하기">
         </form>
     </div>
 </body>

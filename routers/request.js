@@ -174,7 +174,6 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
         req_ability : queryResult2
     }
 
-    console.log(rNum);
     res.json(result);
 }));
 

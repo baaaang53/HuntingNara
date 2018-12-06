@@ -58,28 +58,9 @@
                 return false;
             } else {
                 $('#portfolio_form input[type="text"]').val($('#id').val());
-                console.log(JSON.stringify($('#portfolio_form')));
+
                 $.ajax({
                     type: 'post',
-                    enctype: 'multipart/form-data',
-                    async: false,
-                    processData: false,
-                    contentType: false,
-                    url: '/upload/portfolio',
-                    data: $('#portfolio_form'),
-                    succes: function(data, status) {
-                        console.log(data);
-                    },
-                    error: function(err) {
-                        console.log(err);
-                        alert('회원가입이 완료되지 않았습니다');
-                        location.href = './register';
-                        return;
-                    }
-                });
-                $.ajax({
-                    type: 'post',
-                    async: false,
                     url: '/user/register',
                     data: $('#register').serialize(),
                     success: function(data, status) {
@@ -89,14 +70,12 @@
                         } else {
                             alert('회원가입이 완료되지 않았습니다');
                             location.href = './register';
-                            return;
                         }
                     },
                     error: function(error) {
                         console.log(error);
                         alert('회원가입이 완료되지 않았습니다');
                         location.href = './register';
-                        return false;
                     }
                 });
             }
@@ -136,12 +115,12 @@
             </fieldset>
             <input type="text" name="portfolio" id="portfolio" hidden>
         </form>
-        <form id="portfolio_form" enctype="multipart/form-data">
+        <form id="portfolio_form" method="post" enctype="multipart/form-data" action="/upload/portfolio" onsubmit="submitForm();">
             &emsp;포트폴리오:
             <input type="file" name="portfolio"><br><br>
             <input type="text" name="id" hidden>
+            <input type="submit" value="가입하기">
         </form>
-        &emsp;<button type="button" onclick="submitForm();">가입하기</button>
     </div>
 </body>
 </html>
