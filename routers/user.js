@@ -5,6 +5,7 @@ const path = require('path');
 const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
 const multer = require('multer');
+const crypto = require('crypto');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -39,48 +40,75 @@ router.post('/checkId', wrapper.asyncMiddleware(async (req, res, next) => {
 router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(async (req, res, next) => {
     const type = req.body.type;
     const id = req.body.id;
-    const pw = req.body.pw;
     const name = req.body.name;
     const phone = req.body.phone;
-    let queryResult;
-    if (type == 'freelancer') {
-        const age = req.body.age;
-        const career = req.body.career;
-        const major = req.body.major;
-        const language = req.body.language;
-        const competence = req.body.competence;
-        const portfolio = '/public/upload/' + req.file.filename;
-        queryResult = await db.insert({
-            into: 'USER',
-            attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
-            values: [id, pw, phone, name, type, career, age, major]
+    crypto.randomBytes(64, (err, buf) => {
+         crypto.pbkdf2(req.body.pw, buf.toString('base64'), 100000, 64, 'sha512', async (err, key) => {
+             const pw = key.toString('base64');
+             const salt = buf.toString('base64');
+             let queryResult;
+             if (type == 'freelancer') {
+                 const age = req.body.age;
+                 const career = req.body.career;
+                 const major = req.body.major;
+                 const language = req.body.language;
+                 const competence = req.body.competence;
+                 const portfolio = '/public/upload/' + req.file.filename;
+                 queryResult = await db.insert({
+                     into: 'USER',
+                     attributes: ['ID', 'PW', 'SALT', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
+                     values: [id, pw, salt, phone, name, type, career, age, major]
+                 });
+                 if (queryResult == 'success') {
+                     for (let i=0; i<language.length; i++) {
+                         if (language[i]) {
+                             queryResult = await db.insert({
+                                 into: 'F_ABILITY',
+                                 attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                 values: [id, language[i], competence[i]],
+                             });
+                         }
+                     }
+                 }
+                 if (queryResult == 'success') {
+                     queryResult = await db.insert({
+                         into: 'OUTER_PORTFOLIO',
+                         attributes: ['F_ID', 'CONTENT'],
+                         values: [id, portfolio]
+                     })
+                 }
+             } else {
+                 queryResult = await db.insert({
+                     into: 'USER',
+                     attributes: ['ID', 'PW', 'SALT', 'PHONE', 'NAME', 'TYPE'],
+                     values: [id, pw, salt, phone, name, type]
+                 });
+             }
+             res.json({success: queryResult=='success'});
         });
-        if (queryResult == 'success') {
-            for (let i=0; i<language.length; i++) {
-                if (language[i]) {
-                    queryResult = await db.insert({
-                        into: 'F_ABILITY',
-                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                        values: [id, language[i], competence[i]],
-                    });
-                }
-            }
+    });
+
+}));
+
+// 로그인
+router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
+    const id = req.body.id;
+    const queryResult = await db.select({
+        from: 'USER',
+        what: ['PW', 'SALT'],
+        where: {
+            id: id
         }
-        if (queryResult == 'success') {
-            queryResult = await db.insert({
-                into: 'OUTER_PORTFOLIO',
-                attributes: ['F_ID', 'CONTENT'],
-                values: [id, portfolio]
-            })
+    });
+    const pw = queryResult[0]['PW'];
+    const salt = queryResult[0]['SALT'];
+    crypto.pbkdf2(req.body.pw, salt, 100000, 64, 'sha512', async (err, key) => {
+        if (key.toString('base64') == pw) {
+            res.json({success: true});
+        } else {
+            res.json({success: false});
         }
-    } else {
-        queryResult = await db.insert({
-            into: 'USER',
-            attributes: ['ID', 'PW', 'PHONE', 'NAME', 'TYPE'],
-            values: [id, pw, phone, name, type]
-        });
-    }
-    res.json({success: queryResult=='success'});
+    });
 }));
 
 // 사용자 목록 페이지
@@ -124,11 +152,5 @@ router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     }
     res.json(result);
 }));
-
-// 이건 왜 여기있지2
-router.post('/login', (req, res, next) => {
-    console.log(req.body);
-    res.json({body: req.body});
-});
 
 module.exports = router;
