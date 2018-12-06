@@ -5,6 +5,17 @@ const path = require('path');
 const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
 const url = require('url');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/upload');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+var upload = multer({ storage: storage });
 
 // 의뢰등록 - 의뢰 정보 입력 페이지
 router.get('/register', (req, res, next) => {
@@ -12,7 +23,7 @@ router.get('/register', (req, res, next) => {
 });
 
 // 의뢰등록 - form submit
-router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
     const cId = 'admin'; //나중에 할 곳
     const title = req.body.title;
     const cost = req.body.cost;
@@ -21,23 +32,37 @@ router.post('/register', wrapper.asyncMiddleware(async (req, res, next) => {
     const career = req.body.career;
     const language = req.body.language;
     const competence = req.body.competence;
+    const documents = req.files;
     let queryResult = await db.insert({
         into: 'REQUEST',
         attributes: ['C_ID','F_ID', 'TITLE', 'COST', 'S_DATE', 'E_DATE', 'CAREER'],
         values: [cId, "admin", title, cost, s_date, e_date, career]
     });
-    queryResult = await db.getQueryResult('SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId + '" ORDER BY R_NUM DESC LIMIT 1;');
-    const requestNum = queryResult[0]['R_NUM'];
-    for (let i=0; i<language.length; i++) {
-        if (language[i]) {
-            queryResult = await db.insert({
-                into: 'REQ_ABILITY',
-                attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-                values: [requestNum, language[i], competence[i]],
-            });
+    if (queryResult == 'success') {
+        queryResult = await db.getQueryResult(
+            'SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId +
+            '" ORDER BY R_NUM DESC LIMIT 1;');
+        const rNum = queryResult[0]['R_NUM'];
+        for (let i = 0; i < language.length; i++) {
+            if (language[i]) {
+                queryResult = await db.insert({
+                    into: 'REQ_ABILITY',
+                    attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
+                    values: [rNum, language[i], competence[i]],
+                });
+            }
+        }
+        if (queryResult == 'success') {
+            for (const document of documents) {
+                queryResult = await db.insert({
+                    into: 'REQ_DOC',
+                    attributes: ['R_NUM', 'FILE'],
+                    values: [rNum, '/public/upload/' + document.filename]
+                });
+            }
         }
     }
-    res.json({success: queryResult=='success'});
+    res.json({success: queryResult == 'success'})
 }));
 
 // 의뢰 목록 페이지 _관리자
