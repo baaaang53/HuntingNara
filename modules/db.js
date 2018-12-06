@@ -85,11 +85,15 @@ exports.insert = (option) => {
         }
         sql = sql.slice(0, -2) + ')';
     }
-    sql += ' VALUES (';
-    for (const value of option.values) {
-        sql += '"' + value + '", ';
-    };
-    sql = sql.slice(0, -2) + ');';
+    if (option.where) {
+        sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WHERE ';
+        for (const key in option.where) {
+            sql += key + '="' + option.where[key] + '" AND ';
+        }
+        sql = sql.slice(0, -5) + ';';
+    } else {
+        sql = sql.slice(0, -2) + ' FROM ' + option.from + ';';
+    }
     console.log('==================== Query ==========================');
     console.log(sql);
     return new Promise( (resolve, reject) => {
@@ -108,4 +112,37 @@ exports.insert = (option) => {
 };
 // return = 'success'
 
+// update
+// option = {
+//     table: 'USER',
+//     set: {'ID': 'keroro', 'NAME': 'john'},
+//     where: {'AGE': 30}
+// }
+exports.update = (option) => {
+    let sql = 'UPDATE ' + option.table + ' SET ';
+    for (const s in option.set) {
+        sql +=  s + ' = "' + option.set[s] + '", ';
+    }
+    sql = sql.slice(0, -2) + ' WHERE ';
+    for (const w in option.where) {
+        sql += w + ' = "' + option.where[w] + '" AND ';
+    };
+    sql = sql.slice(0, -5) + ';';
+    console.log('==================== Query ==========================');
+    console.log(sql);
+    return new Promise( (resolve, reject) => {
+        connection.getConnection((err, connection) => {
+            if (err) return reject(err);
+            connection.query(sql, (err, rows) => {
+                connection.release();
+                if (err) return reject(err);
+                console.log('==================== QueryResult ====================');
+                console.log('success');
+                console.log('=====================================================');
+                resolve('success');
+            });
+        });
+    });
+};
+// return = 'success'
 

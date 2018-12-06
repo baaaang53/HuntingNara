@@ -97,7 +97,7 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
         from: 'USER',
         what: ['PW', 'SALT'],
         where: {
-            id: id
+            ID: id
         }
     });
     const pw = queryResult[0]['PW'];
