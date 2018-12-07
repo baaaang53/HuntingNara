@@ -112,6 +112,13 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
     });
 }));
 
+// 로그아웃
+router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) => {
+    delete req.session.user_id;
+    delete req.session.user_type;
+    res.redirect('/');
+}));
+
 // 회원정보 수정 - 프리랜서, 의뢰자
 router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/user_modify.html'));

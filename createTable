@@ -20,7 +20,7 @@ CREATE TABLE USER
 );
 
 INSERT INTO USER (ID,PW, SALT,PHONE,NAME,TYPE)
-VALUES ('admin','TNpXc+ZWH9CXiImh5/cXbl0SkIZnk683Lt/z9VeEW2ErC2wgbOF8U0WW+AzqYfGzOjsaVCq7OLxwvCZiDQ8pLw==', 'ySpoBUyldugtVfPoSQbqLd9Pid06RoxTntHeJPW1EeU7PNfJv/wxfrPJ3bTLBbbe0Xzyy11pz1jwdEE+Xnn79w==','00000000000', 'administrator','administrator');
+VALUES ('admin','TNpXc+ZWH9CXiImh5/cXbl0SkIZnk683Lt/z9VeEW2ErC2wgbOF8U0WW+AzqYfGzOjsaVCq7OLxwvCZiDQ8pLw==', 'ySpoBUyldugtVfPoSQbqLd9Pid06RoxTntHeJPW1EeU7PNfJv/wxfrPJ3bTLBbbe0Xzyy11pz1jwdEE+Xnn79w==','00000000000', 'admin','admin');
 
 CREATE TABLE F_ABILITY
 (
