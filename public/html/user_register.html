@@ -13,6 +13,10 @@
     <script type="text/javascript">
         // 회원가입 - 아이디 중복 검사
         function checkId() {
+            if($('#id').val()===""){
+                alert('입력된 아이디가 없습니다');
+                return false;
+            }
             $.ajax({
                 type: 'post',
                 url: '/user/checkId',
@@ -49,20 +53,61 @@
         }
 
         function submitForm() {
+            var radioflag = false;
             if (!$('#id').prop('readonly')) {
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
                 const formData = new FormData();
+                for (const input of $('#register input[type="radio"]')) {
+                    if(input.checked) {
+                        formData.append(input.name, input.value);
+                        radioflag = false;}
+                    else if(radioflag) {
+                        alert("회원 타입을 선택해주세요")
+                        return false;}
+                    else{
+                        radioflag = true;}
+                }
                 for (const input of $('#register input').not($('#register input[type="radio"]')).not($('#register input[type="file"]'))) {
+                    if(input.value === ""){
+                        switch(input.name){
+                            case("password"):
+                                alert("입력된 비밀번호가 없습니다");
+                                return false;
+                            case("name"):
+                                alert("입력된 이름이 없습니다");
+                                return false;
+                            case("phone"):
+                                alert("입력된 전화번호가 없습니다");
+                                return false;
+                        }
+                        if($('#freelancer')[0].checked){
+                            switch(input.name){
+                                case("age"):
+                                    alert("입력된 나이가 없습니다");
+                                    return false;
+                                case("career"):
+                                    alert("입력된 경력이 없습니다");
+                                    return false;
+                                case("major"):
+                                    alert("입력된 전공학과가 없습니다");
+                                    return false;
+                                case("language"):
+                                    alert("최소 하나 이상의 능숙한 언어를 입력해주세요");
+                                    return false;
+                                case("competence"):
+                                    alert("입력한 언어의 능숙도를 입력해주세요");
+                                    return false;
+                            }
+                        }
+                    }
                     formData.append(input.name, input.value);
                 }
-                for (const input of $('#register input[type="radio"]')) {
-                    if (input.checked) {
-                        formData.append(input.name, input.value);
-                    }
-                }
                 for (const input of $('#register input[type="file"]')) {
+                    if(input.files.length === 0){
+                        alert("포트폴리오를 업로드 해주세요")
+                        return false;}
                     formData.append(input.name, input.files[0]);
                 }
                 $.ajax({
@@ -98,17 +143,17 @@
         <h1 style = "text-align: center;">회원가입</h1><br><br>
         <form id="register"> <!--action="/user/register" method="post" enctype="multipart/form-data" onsubmit="submitForm();"-->
             &emsp;회원유형:
-            <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
-            <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
+            <input type="radio" name="type" value="client" onchange="moreInfo();" />의뢰인
+            <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();" />프리랜서<br><br>
             &emsp;아이디:
-            <input type="text" name="id" id="id" required><br><br>
-            &emsp;<button type="button" onclick="checkId();">중복검사</button><br><br>
-            &emsp;비밀번호:
-            <input type="password" name="pw" id="pw" required><br><br>
+            <input type="text" name="id" id="id" required /><br><br>
+            <button type="button" onclick="checkId();">중복검사</button><br><br>
+            비밀번호:
+            <input type="password" name="pw" id="pw" required /><br><br>
             &emsp;이름:
-            <input type="text" name="name" required><br><br>
+            <input type="text" name="name" required/><br><br>
             &emsp;휴대폰:
-            <input type="phone" name="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
+            <input type="phone" name="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required/><br><br>
             <fieldset class="additional_form" form="register" hidden>
                 &emsp;나이:
                 <input type="number" name="age" min="0" max="200"><br><br>
