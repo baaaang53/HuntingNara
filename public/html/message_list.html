@@ -10,13 +10,90 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-        // session.id로 list 호출
+        $('document').ready(function() {
+            getMessage();
+        })
+
+        function getMessage() {
+            $('#message_table tr:gt(0)').remove();
+            $.ajax({
+                type: 'post',
+                url: '/message/list',
+                data: {},
+                success: function(data, status) {
+                    const cols = ['DATETIME', 'NAME'];
+                    for (const row of data) {
+                        row['DATETIME'] = new Date(row['DATETIME']).toLocaleDateString('ko-KR');
+                        let newTr = '<tr onclick="getDetail(\'' + row['CONTENT'] + '\', ' +
+                            row['M_NUM'] + ')">';
+                        const title = row['CONTENT'].slice(0, 10);
+                        newTr += '<td>' + title + '</td>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        if (row['STATE'] == 'unread') newTr += '<td>읽지않음</td>';
+                        else if (row['STATE'] == 'read') newTr += '<td>읽음</td>';
+                        newTr += '</tr>';
+                        $('#message_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+
+        function getDetail(content, mNum) {
+            $.ajax({
+                method: 'post',
+                url: '/message/read',
+                data: {
+                    mNum: mNum
+                },
+                success: function (data, status) {
+                    if (data.success) {
+                        $('div.modal-body').empty();
+                        $('div.modal-body').append('<a>' + content + '</a>');
+                        $('#detail_modal').modal('show');
+                        getMessage();
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
     </script>
 
 </head>
 <body>
     <div>
         <h1>내 메시지함</h1>
+    </div>
+    <div>
+        <table id="message_table" style="width: 100%;">
+            <tr>
+                <th>제목</th>
+                <th>날짜</th>
+                <th>보낸이</th>
+                <th>상태</th>
+            </tr>
+        </table>
+    </div>
+    <!--여기가 팝업 부분 - 평소엔 안보이다가 getDetail 함수에서 show 하면 팝업으로 올라옴-->
+    <!--내용은 modal-body 에 넣으면 됨-->
+    <div id="detail_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    메시지
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

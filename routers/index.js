@@ -7,11 +7,12 @@ const db = require('../modules/db');
 
 router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
     if (req.session.user_id && req.session.user_type) {
-        if (req.session.user_type == 'admin') res.type('html').sendFile(path.join(__dirname, '../public/html/index_admin.html'));
-        else if (req.session.user_type == 'client') res.type('html').sendFile(path.join(__dirname, '../public/html/index_client.html'));
-        else if (req.session.user_type == 'freelancer') res.type('html').sendFile(path.join(__dirname, '../public/html/index_freelancer.html'));
+        if (req.session.user_type == 'admin') res.redirect('./admin');
+        else if (req.session.user_type == 'client') res.redirect('./client');
+        else if (req.session.user_type == 'freelancer') res.redirect('./freelancer');
+    } else {
+        res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
     }
-    res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
 }));
 
 // 관리자 메인페이지

@@ -19,6 +19,8 @@
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
                     for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
                         let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
@@ -40,6 +42,7 @@
                 url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
+                    $('div.modal-body').empty();
                     // 여기서 data 자리에 엘리먼트 집어넣으면 됨
                     // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
                     $('div.modal-body').append('<button type="button" onclick="apply(\'' + rNum + '\');">지원하기</button>');

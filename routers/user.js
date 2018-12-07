@@ -19,7 +19,6 @@ var upload = multer({ storage: storage });
 
 // 회원가입 - 사용자 정보 입력 페이지
 router.get('/register', wrapper.asyncMiddleware(async (req, res, next) => {
-    // res.sendFile('../public/html/user_register.html');
     res.type('html').sendFile(path.join(__dirname, '../public/html/user_register.html'));
 }));
 
@@ -60,14 +59,22 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
                      values: [id, pw, salt, phone, name, type, career, age, major]
                  });
                  if (queryResult == 'success') {
-                     for (let i=0; i<language.length; i++) {
-                         if (language[i]) {
-                             queryResult = await db.insert({
-                                 into: 'F_ABILITY',
-                                 attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                 values: [id, language[i], competence[i]],
-                             });
+                     if (typeof language == 'object') {
+                         for (let i = 0; i < language.length; i++) {
+                             if (language[i]) {
+                                 queryResult = await db.insert({
+                                     into: 'F_ABILITY',
+                                     attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                     values: [id, language[i], competence[i]],
+                                 });
+                             }
                          }
+                     } else {
+                         queryResult = await db.insert({
+                             into: 'F_ABILITY',
+                             attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                             values: [id, language, competence],
+                         });
                      }
                  }
                  if (queryResult == 'success') {
@@ -200,12 +207,22 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                                 F_ID: id
                             }
                         });
-                        for (let i = 0; i < language.length; i++) {
-                            if (language[i]) {
+                        if (typeof language == 'object') {
+                            for (let i = 0; i < language.length; i++) {
+                                if (language[i]) {
+                                    queryResult = await db.insert({
+                                        into: 'F_ABILITY',
+                                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                        values: [id, language[i], competence[i]],
+                                    });
+                                }
+                            }
+                        } else {
+                            if (language) {
                                 queryResult = await db.insert({
                                     into: 'F_ABILITY',
                                     attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                    values: [id, language[i], competence[i]],
+                                    values: [id, language, competence],
                                 });
                             }
                         }
@@ -269,12 +286,22 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                         F_ID: id
                     }
                 });
-                for (let i = 0; i < language.length; i++) {
-                    if (language[i]) {
+                if (typeof language == 'object') {
+                    for (let i = 0; i < language.length; i++) {
+                        if (language[i]) {
+                            queryResult = await db.insert({
+                                into: 'F_ABILITY',
+                                attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                values: [id, language[i], competence[i]],
+                            });
+                        }
+                    }
+                } else {
+                    if (language) {
                         queryResult = await db.insert({
                             into: 'F_ABILITY',
                             attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                            values: [id, language[i], competence[i]],
+                            values: [id, language, competence],
                         });
                     }
                 }
@@ -307,19 +334,6 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
         }
         res.json({success: queryResult == 'success'});
     }
-}));
-
-// 외부 포트폴리오 다운로드 - 프리랜서
-router.get('/outer_portfolio/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = req.session.user_id;
-    const queryResult = await db.select({
-        from: 'OUTER_PORTFOLIO',
-        what: ['CONTENT'],
-        where: {
-            F_ID: id
-        }
-    });
-    res.download('.' + queryResult[0]['CONTENT'], queryResult[0]['CONTENT'].split('/')[-1]);
 }));
 
 // 사용자 목록 페이지
