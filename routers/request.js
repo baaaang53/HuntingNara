@@ -274,7 +274,7 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where: { F_ID : "admin"} //수정필요 _ 현재 로그인 정보
+        where: { F_ID : req.session.user_id }
     });
     res.json(queryResult);
 }));
@@ -307,7 +307,7 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where : {C_ID : "admin"} //수정 필요 _ 현재 로그인 정보
+        where : {C_ID : req.session.user_id}
     });
     res.json(queryResult);
 }));
