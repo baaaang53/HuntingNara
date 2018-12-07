@@ -6,17 +6,6 @@ const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
 
 router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
-    // const queryResult = await db.update({
-    //     table: 'USER',
-    //     set: {
-    //         AGE: 10,
-    //         MAJOR: '컴퓨터과학'
-    //     },
-    //     where: {
-    //         ID: 'keroro103',
-    //         NAME: '최준수'
-    //     }
-    // })
     res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
 }));
 

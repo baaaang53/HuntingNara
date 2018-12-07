@@ -87,7 +87,6 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
              res.json({success: queryResult=='success'});
         });
     });
-
 }));
 
 // 로그인
@@ -109,6 +108,209 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
             res.json({success: false});
         }
     });
+}));
+
+// 회원정보 수정 - 프리랜서, 의뢰자
+router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/user_modify.html'));
+}));
+
+// 회원정보 가져오기 - 프리랜서, 의뢰자
+router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
+    const id = 'admin';        // req.session.id
+    let queryResult = await db.select({
+        from: 'USER',
+        what: ['PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
+        where: {
+            ID: id
+        }
+    });
+    const result = {};
+    result['id'] = id;
+    result['phone'] = queryResult[0]['PHONE'];
+    result['name'] = queryResult[0]['NAME'];
+    result['type'] = queryResult[0]['TYPE'];
+    if (queryResult[0]['TYPE'] == 'freelancer') {
+        result['career'] = queryResult[0]['CAREER'];
+        result['age'] = queryResult[0]['AGE'];
+        result['major'] = queryResult[0]['MAJOR'];
+        queryResult = await db.select({
+            from: 'F_ABILITY',
+            what: ['LANGUAGE', 'COMPETENCE'],
+            where: {
+                F_ID: id
+            }
+        });
+        result['language'] = [];
+        result['competence'] = [];
+        for (let i=0; i<queryResult.length; i++) {
+            result['language'][i] = queryResult[i]['LANGUAGE'];
+            result['competence'][i] = queryResult[i]['COMPETENCE'];
+        }
+    }
+    res.json(result);
+}));
+
+// 회원정보 수정 - 프리랜서, 의뢰자
+router.post('/modify', wrapper.asyncMiddleware(async (req, res, next) => {
+    const type = req.body.type;
+    const id = req.body.id;
+    const name = req.body.name;
+    const phone = req.body.phone;
+    if (req.body.pw) {
+        crypto.randomBytes(64, (err, buf) => {
+            crypto.pbkdf2(req.body.pw, buf.toString('base64'), 100000, 64, 'sha512', async (err, key) => {
+                const pw = key.toString('base64');
+                const salt = buf.toString('base64');
+                let queryResult;
+                if (type == 'freelancer') {
+                    const age = req.body.age;
+                    const career = req.body.career;
+                    const major = req.body.major;
+                    const language = req.body.language;
+                    const competence = req.body.competence;
+                    queryResult = await db.update({
+                        table: 'USER',
+                        set: {
+                            PW: pw,
+                            SALT: salt,
+                            PHONE: phone,
+                            NAME: name,
+                            CAREER: career,
+                            AGE: age,
+                            MAJOR: major
+                        },
+                        where: {
+                            ID: id
+                        }
+                    });
+                    if (queryResult == 'success') {
+                        queryResult = await db.delete({
+                            from: 'F_ABILITY',
+                            where: {
+                                F_ID: id
+                            }
+                        });
+                        for (let i = 0; i < language.length; i++) {
+                            if (language[i]) {
+                                queryResult = await db.insert({
+                                    into: 'F_ABILITY',
+                                    attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                    values: [id, language[i], competence[i]],
+                                });
+                            }
+                        }
+                    }
+                    if (queryResult == 'success' && req.file) {
+                        queryResult = await db.delete({
+                            from: 'OUTER_PORTFOLIO',
+                            where: {
+                                F_ID: id
+                            }
+                        })
+                        const portfolio = '/public/upload/' + req.file.filename;
+                        queryResult = await db.insert({
+                            into: 'OUTER_PORTFOLIO',
+                            attributes: ['F_ID', 'CONTENT'],
+                            values: [id, portfolio]
+                        })
+                    }
+                } else {
+                    queryResult = await db.update({
+                        table: 'USER',
+                        set: {
+                            PW: pw,
+                            SALT: salt,
+                            PHONE: phone,
+                            NAME: name
+                        },
+                        where: {
+                            ID: id
+                        }
+                    });
+                }
+                res.json({success: queryResult == 'success'});
+            });
+        });
+    } else {
+        let queryResult;
+        if (type == 'freelancer') {
+            const age = req.body.age;
+            const career = req.body.career;
+            const major = req.body.major;
+            const language = req.body.language;
+            const competence = req.body.competence;
+            queryResult = await db.update({
+                table: 'USER',
+                set: {
+                    PHONE: phone,
+                    NAME: name,
+                    CAREER: career,
+                    AGE: age,
+                    MAJOR: major
+                },
+                where: {
+                    ID: id
+                }
+            });
+            if (queryResult == 'success') {
+                queryResult = await db.delete({
+                    from: 'F_ABILITY',
+                    where: {
+                        F_ID: id
+                    }
+                });
+                for (let i = 0; i < language.length; i++) {
+                    if (language[i]) {
+                        queryResult = await db.insert({
+                            into: 'F_ABILITY',
+                            attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                            values: [id, language[i], competence[i]],
+                        });
+                    }
+                }
+            }
+            if (queryResult == 'success' && req.file) {
+                queryResult = await db.delete({
+                    from: 'OUTER_PORTFOLIO',
+                    where: {
+                        F_ID: id
+                    }
+                })
+                const portfolio = '/public/upload/' + req.file.filename;
+                queryResult = await db.insert({
+                    into: 'OUTER_PORTFOLIO',
+                    attributes: ['F_ID', 'CONTENT'],
+                    values: [id, portfolio]
+                })
+            }
+        } else {
+            queryResult = await db.update({
+                table: 'USER',
+                set: {
+                    PHONE: phone,
+                    NAME: name
+                },
+                where: {
+                    ID: id
+                }
+            });
+        }
+        res.json({success: queryResult == 'success'});
+    }
+}));
+
+// 외부 포트폴리오 다운로드 - 프리랜서
+router.get('/outer_portfolio/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
+    const id = 'admin';     // req.session.id
+    const queryResult = await db.select({
+        from: 'OUTER_PORTFOLIO',
+        what: ['CONTENT'],
+        where: {
+            F_ID: id
+        }
+    });
+    res.download('.' + queryResult[0]['CONTENT'], queryResult[0]['CONTENT'].split('/')[-1]);
 }));
 
 // 사용자 목록 페이지

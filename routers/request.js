@@ -85,6 +85,29 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_registered.html'));
 }));
 
+// 의뢰 지원하기
+router.post('/apply', wrapper.asyncMiddleware(async (req, res, next) => {
+    const id = 'admin';     // req.session.id
+    const rNum = req.body.rNum;
+    let queryResult = await db.update({
+        table: 'REQUEST',
+        set: {
+            STATE: 'applying'
+        },
+        where: {
+            R_NUM: rNum
+        }
+    });
+    if (queryResult == 'success') {
+        queryResult = await db.insert({
+            into: 'APPLIED_REQ',
+            attributes: ['R_NUM', 'F_ID'],
+            values: [rNum, id]
+        });
+    }
+    res.json({success: queryResult == 'success'});
+}));
+
 // 완료 요청 페이지
 router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));

@@ -40,10 +40,9 @@
                 url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
-                    console.log(JSON.stringify(data));
                     // 여기서 data 자리에 엘리먼트 집어넣으면 됨
                     // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
-                    $('div .modal-body').innerHTML = data;
+                    $('div.modal-body').append('<button type="button" onclick="apply(\'' + rNum + '\');">지원하기</button>');
                     $('#detail_modal').modal('show');
                 },
                 error: function(err) {
@@ -51,6 +50,28 @@
                 }
             });
         }
+
+        function apply(rNum) {
+            $.ajax({
+                type: 'post',
+                url: '/request/apply',
+                data: {
+                    rNum: rNum
+                },
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('지원되었습니다');
+                    } else {
+                        alert('지원되지 않았습니다');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('지원되지 않았습니다');
+                }
+            });
+        }
+
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("request_table");
