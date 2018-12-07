@@ -10,7 +10,7 @@ router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = 'admin';     // req.session.id
+    const id = req.session.user_id;
     const queryResult = await db.select({
         from: 'MESSAGE',
         what: ['*'],
@@ -22,7 +22,7 @@ router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 router.post('/send', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = 'admin';     // req.session.id
+    const id = req.session.user_id;
     const rId = req.body.rId;
     const content = req.body.content;
     const queryResult = await db.insert({

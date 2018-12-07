@@ -126,7 +126,7 @@ router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {
 
 // 회원정보 가져오기 - 프리랜서, 의뢰자
 router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = req.session.user_id;        // req.session.id
+    const id = req.session.user_id;
     let queryResult = await db.select({
         from: 'USER',
         what: ['PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
@@ -311,7 +311,7 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
 
 // 외부 포트폴리오 다운로드 - 프리랜서
 router.get('/outer_portfolio/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = 'admin';     // req.session.id
+    const id = req.session.user_id;
     const queryResult = await db.select({
         from: 'OUTER_PORTFOLIO',
         what: ['CONTENT'],

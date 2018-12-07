@@ -24,7 +24,7 @@ router.get('/register', (req, res, next) => {
 
 // 의뢰등록 - form submit
 router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
-    const cId = 'admin'; //나중에 할 곳
+    const cId = req.session.user_id;
     const title = req.body.title;
     const cost = req.body.cost;
     const s_date = req.body.s_date;
@@ -87,7 +87,7 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
 
 // 의뢰 지원하기
 router.post('/apply', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = 'admin';     // req.session.id
+    const id = req.session.user_id;
     const rNum = req.body.rNum;
     let queryResult = await db.update({
         table: 'REQUEST',
