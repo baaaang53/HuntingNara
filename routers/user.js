@@ -94,7 +94,7 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
     const id = req.body.id;
     const queryResult = await db.select({
         from: 'USER',
-        what: ['PW', 'SALT'],
+        what: ['*'],
         where: {
             ID: id
         }
@@ -103,7 +103,11 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
     const salt = queryResult[0]['SALT'];
     crypto.pbkdf2(req.body.pw, salt, 100000, 64, 'sha512', async (err, key) => {
         if (key.toString('base64') == pw) {
-            res.json({success: true});
+            req.session.user_id = id;
+            req.session.user_type = queryResult[0]['TYPE'];
+            if (req.session.user_type == 'admin') res.type('html').sendFile(path.join(__dirname, '../public/html/index_admin.html'));
+            else if (req.session.user_type == 'client') res.type('html').sendFile(path.join(__dirname, '../public/html/index_client.html'));
+            else if (req.session.user_type == 'freelancer') res.type('html').sendFile(path.join(__dirname, '../public/html/index_freelancer.html'));
         } else {
             res.json({success: false});
         }
@@ -117,7 +121,7 @@ router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {
 
 // 회원정보 가져오기 - 프리랜서, 의뢰자
 router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
-    const id = 'admin';        // req.session.id
+    const id = req.session.user_id;        // req.session.id
     let queryResult = await db.select({
         from: 'USER',
         what: ['PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],

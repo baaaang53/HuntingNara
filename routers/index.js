@@ -6,6 +6,7 @@ const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
 
 router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
+    console.log(req.session.user_id);
     res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
 }));
 

@@ -8,6 +8,7 @@ const path = require('path');
 const router = require('./router');
 const config = require('./config');
 const socket = require('./socket.io');
+const session = require('express-session');
 
 const app = express();
 
@@ -16,6 +17,12 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb'}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
+
+app.use(session({
+    secret: 'huntingnara',
+    resave: false,
+    saveUninitialized: true,
+}));
 
 app.use('/', router);
 
