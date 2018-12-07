@@ -9,6 +9,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function login() {
+            $.ajax({
+                type: 'post',
+                url: '/user/login',
+                data: $('#login').serialize(),
+                success: function(data, status) {
+                    if (data.success) {
+                        location.href = '../';
+                    } else {
+                        alert('정보가 올바르지 않습니다');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    </script>
+
 </head>
 <body>
     <h1 style = "text-align: center;"><br>$$헌팅나라에 오신 것을 환영합니다$$</h1>
@@ -30,7 +51,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <br><input type="submit" class="btn btn-default" value="로그인">
+                        <br><button type="button" class="btn btn-default" onclick="login();">로그인</button>
                         &emsp;<a href="/user/register" ><button type="button" class ="btn btn-default">회원가입</button></a>
                     </td>
                 </tr>

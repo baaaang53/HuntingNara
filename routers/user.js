@@ -105,9 +105,7 @@ router.post('/login', wrapper.asyncMiddleware( async (req, res, next) => {
         if (key.toString('base64') == pw) {
             req.session.user_id = id;
             req.session.user_type = queryResult[0]['TYPE'];
-            if (req.session.user_type == 'admin') res.type('html').sendFile(path.join(__dirname, '../public/html/index_admin.html'));
-            else if (req.session.user_type == 'client') res.type('html').sendFile(path.join(__dirname, '../public/html/index_client.html'));
-            else if (req.session.user_type == 'freelancer') res.type('html').sendFile(path.join(__dirname, '../public/html/index_freelancer.html'));
+            res.json({success: true});
         } else {
             res.json({success: false});
         }

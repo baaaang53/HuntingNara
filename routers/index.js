@@ -6,7 +6,11 @@ const wrapper = require('../modules/wrapper');
 const db = require('../modules/db');
 
 router.get('/', wrapper.asyncMiddleware(async (req, res, next) => {
-    console.log(req.session.user_id);
+    if (req.session.user_id && req.session.user_type) {
+        if (req.session.user_type == 'admin') res.type('html').sendFile(path.join(__dirname, '../public/html/index_admin.html'));
+        else if (req.session.user_type == 'client') res.type('html').sendFile(path.join(__dirname, '../public/html/index_client.html'));
+        else if (req.session.user_type == 'freelancer') res.type('html').sendFile(path.join(__dirname, '../public/html/index_freelancer.html'));
+    }
     res.type('html').sendFile(path.join(__dirname, '../public/html/index.html'));
 }));
 
