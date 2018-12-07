@@ -17,6 +17,7 @@
                 url: '/user/info',
                 data: {},
                 success: function(data, status) {
+                    $('#type').val(data['type']);
                     $('#id').val(data['id']);
                     $('#phone').val(data['phone']);
                     $('#name').val(data['name']);
@@ -89,6 +90,7 @@
 <div class="register_form">
     <h1 style = "text-align: center;">회원정보 수정</h1><br><br>
     <form id="register"> <!--action="/user/register" method="post" enctype="multipart/form-data" onsubmit="submitForm();"-->
+        <input type="text" name="type" id="type" hidden>
         &emsp;아이디:
         <input type="text" name="id" id="id" readonly required><br><br>
         &emsp;비밀번호:

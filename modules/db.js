@@ -114,7 +114,7 @@ exports.insert = (option) => {
 //     where: {'ID': 'keroro'}
 // }
 exports.delete = (option) => {
-    let sql = 'DELETE ' + option.from + ' WHERE ';
+    let sql = 'DELETE FROM ' + option.from + ' WHERE ';
     for (const w in option.where) {
         sql += w + ' = "' + option.where[w] + '" AND ';
     };

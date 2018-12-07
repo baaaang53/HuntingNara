@@ -152,7 +152,7 @@ router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 // 회원정보 수정 - 프리랜서, 의뢰자
-router.post('/modify', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async (req, res, next) => {
     const type = req.body.type;
     const id = req.body.id;
     const name = req.body.name;
