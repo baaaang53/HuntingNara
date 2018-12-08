@@ -17,9 +17,30 @@
         }
 
 
+            //해당 의뢰의 state는 c_requesting으로 바꾸기
+
         function ask() {
-            //해당 의뢰의 state는 applying으로 바꾸기
-            //
+            $.ajax({
+                type: 'get',
+                url: '/request/askcomplete',
+                data: $('#req_reg').serialize(),
+                success: function(data, status) {
+                    console.log('onsuccess');
+                    console.log(data);
+                    if (data.success) {
+                        alert('요청이 완료되었습니다');
+                        location.href = '../';
+                    } else {
+                        alert('요청이 완료되지 않았습니다');
+                        location.href = './register';
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('요청 완료되지 않았습니다');
+                    location.href = './register';
+                }
+            });
         }
     </script>
 </head>
