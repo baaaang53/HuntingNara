@@ -53,8 +53,8 @@
                     const rNum = rnum;
                     $.ajax({
                         type : 'post',
-                        url : './delete_user',
-                        data : { user_id : rNum}
+                        url : '/request/delete',
+                        data : { rNum : rNum}
                     })
                     window.location.reload();
                 }
