@@ -370,4 +370,23 @@ router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(result);
 }));
 
+// 프리랜서 포트폴리오 조회 페이지
+router.get('/portfolio', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/user_portfolio.html'));
+}));
+
+// 프리랜서 내부 포트폴리오 조회
+router.post('/inner_portfolio', wrapper.asyncMiddleware(async (req, res, next) => {
+    const id = req.session.user_id;
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['TITLE', 'S_DATE', 'E_DATE', 'F_RATE', 'R_NUM'],
+        where: {
+            F_ID: id,
+            STATE: 'complete'
+        }
+    });
+    res.json(queryResult);
+}));
+
 module.exports = router;
