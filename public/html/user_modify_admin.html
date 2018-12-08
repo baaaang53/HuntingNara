@@ -14,6 +14,22 @@
         $(document).ready(function () {
             const userid = location.href.toString().split('?')[1].split('=')[1];
             $.ajax({
+                method:'post',
+                url: '/user/working',
+                data:{user_id : userid},
+                success:function(data,status){
+                    const working = data[0]["count(*)"];
+                    console.log(working);
+                    if(working!==0){
+                        alert("진행중인 의뢰에 참여하고 있는 사용자는 수정할 수 없습니다");
+                        window.close();
+                    }
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+            $.ajax({
                 method: 'post',
                 url: '/user/info/admin',
                 data: { user_id : userid},

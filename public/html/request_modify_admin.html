@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const rNum = location.href.toString().split('?')[1].split('=')[1];     // location.href 로 대체
+            console.log(rNum);
+            $.ajax({
+                method: 'post',
+                url: '/request/info',
+                data: {
+                    rNum: rNum
+                },
+                success: function(data, status) {
+                    if (data['STATE'] != 'registered' && data['STATE'] != 'applying') {
+                        alert('이미 진행중인 의뢰입니다');
+                        window.close();
+                        return;
+                    }
+                    $('#rNum').val(rNum);
+                    $('#title').val(data['TITLE']);
+                    $('#cost').val(data['COST']);
+                    $('#s_date').val(formatDate(data['S_DATE']));
+                    $('#e_date').val(formatDate(data['E_DATE']));
+                    $('#career').val(data['CAREER']);
+                    for (let i=0; i<data['LANGUAGE'].length-1; i++) {
+                        addLanguage();
+                    }
+                    let i = 0;
+                    for (const input of $('input[name="language"]')) {
+                        input.value = data['LANGUAGE'][i];
+                        i++;
+                    }
+                    i = 0;
+                    for (const input of $('input[name="competence"]')) {
+                        input.value = data['COMPETENCE'][i]
+                    }
+                    for (let i=0; i<data['COUNT(REQ_DOC)']; i++) {
+                        $('fieldset.old_req_doc').append('<button type="button" onclick="window.location.replace(\'/download/req_doc?rNum=' + rNum + '&i=' + i + '\')">기존 의뢰문서 ' + (i+1) +'</button>');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            return [year, month, day].join('-');
+        }
+
+        function addLanguage() {
+            $('fieldset.language_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
+        }
+
+        function addDocument() {
+            $('fieldset.document_form').append('<input type="file" name="document"><br><br>');
+        }
+
+        function submitForm() {
+            const formData = new FormData();
+            for (const input of $('#req_reg input').not($('#req_reg input[type="file"]'))) {
+                formData.append(input.name, input.value);
+            }
+            for (const input of $('#req_reg input[type="file"]')) {
+                formData.append(input.name, input.files[0]);
+            }
+            $.ajax({
+                type: 'post',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                async: false,
+                url: '/request/modify',
+                data: formData,
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('의뢰가 수정되었습니다');
+                        location.href = './list/admin';
+                    } else {
+                        alert('의뢰가 수정되지 않았습니다');
+                        location.href = './register';
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('의뢰가 수정되지 않았습니다');
+                    location.href = './register';
+                }
+            });
+
+        }
+    </script>
+</head>
+<body>
+<div class ="req_register_form">
+    <h1 style = "text-align: center;">&emsp;&emsp;의뢰등록</h1><br><br>
+    <form id="req_reg">
+        <input type="number" name="rNum" id="rNum" hidden>
+        &emsp;의뢰제목:
+        <input type="text" name="title" id="title" required><br><br>
+        &emsp;의뢰비용:
+        <input type="number" name="cost" id="cost" min="0" required> 원<br><br>
+        &emsp;시작날짜:
+        <input type="date" name="s_date" id="s_date" required><br><br>
+        &emsp;마감날짜:
+        <input type="date" name="e_date" id="e_date" required><br><br>
+        &emsp;<strong>요구사항</strong><br>
+        &emsp;필요경력:
+        <input type="number" name="career" id="career" min="0" required>년<br><br>
+        <fieldset class="language_form" form="req_reg">
+            &emsp;필요언어/능숙도:<br>
+            &emsp;언어:
+            <input type="text" name="language">
+            능숙도(0~5):
+            <input type="number" name="competence" min="0" max="5">
+            <button type="button" onclick="addLanguage();">+</button><br><br>
+        </fieldset>
+        <fieldset class="document_form" form="req_reg">
+            &emsp;의뢰문서:
+            <input type="file" name="document">
+            <button type="button" onclick="addDocument();">+</button><br><br>
+        </fieldset>
+        <fieldset class="old_req_doc">
+        </fieldset>
+        <button type="button" onclick="submitForm();">등록하기</button>
+    </form>
+</div>
+</body>
+</html>

@@ -128,7 +128,7 @@ router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {
 }));
 // 회원정보 수정 - 관리자
 router.get('/modify_admin', wrapper.asyncMiddleware(async(req,res,next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/admin_user_modify.html'));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/user_modify_admin.html'));
 }));
 
 
@@ -204,6 +204,15 @@ router.post('/info/admin', wrapper.asyncMiddleware(async (req, res, next) => {
     }
     res.json(result);
 }));
+//회원의 작업여부를 알아보기 - 관리자의 수정, 삭제 여부를 위해
+router.post('/working',wrapper.asyncMiddleware(async(req,res,next)=>{
+    const userid = req.body.user_id;
+    console.log(userid);
+    const queryResult = await db.getQueryResult("select count(*) from request where (f_id ='" + userid + "' or c_id= '" + userid + "') " +
+        "and state not in ('registered', 'applying');");
+    console.log(queryResult);
+    res.json(queryResult);
+}))
 
 // 회원정보 수정 - 프리랜서, 의뢰자, 관리자
 router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async (req, res, next) => {
