@@ -35,20 +35,6 @@
             });
         }
 
-        function getDetail(rNum) {
-            $.ajax({
-                type: 'post',
-                url: '/request/detail',
-                data: {rNum: rNum},
-                success: function(data, status) {
-                    $('#request_table tr:eq(' + rNum + ')').after('<tr><td>' + rNum + '번째 detail<br><br><br></td></tr>');
-                    const cols = ['DDDDDD']
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        }
 
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
