@@ -43,7 +43,21 @@
                     console.log(JSON.stringify(data));
                     // 여기서 data 자리에 엘리먼트 집어넣으면 됨
                     // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
-                    $('div .modal-body').innerHTML = data;
+
+                    // const cols = ['LANGUAGE', 'COMPETENCE'];
+                    // for (const row of data) {
+                    //     let newTr = '<tr>';
+                    //     for (const col of cols) {
+                    //         newTr += '<td>' + row[col] + '</td>';
+                    //     }
+                    //     newTr += '</tr>';
+                    //     $('#req_ability_table tr:last').after(newTr);
+                    // }
+
+
+                    var ability ="<h1>subin</h1>";
+                    $('div .modal-body').innerHTML = "<a>ability</a>";
+
                     $('#detail_modal').modal('show');
                 },
                 error: function(err) {
@@ -174,7 +188,13 @@
                     의뢰 상세보기
                 </div>
                 <div class="modal-body">
-
+                    의뢰 문서<br>
+                    <table id = "request_detail" style="width: 100%;">
+                        <tr>
+                            <th> 언어 </th>
+                            <th> 능숙도 </th>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
