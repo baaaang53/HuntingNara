@@ -202,6 +202,7 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_registered.html'));
 }));
 
+
 // 의뢰 지원하기
 router.post('/apply', wrapper.asyncMiddleware(async (req, res, next) => {
     const id = req.session.user_id;
@@ -325,9 +326,25 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
 //     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
 // }));
 
+//의뢰 상세보기 페이지 _ 관리자
+router.get('/detail/admin', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_admin.html'));
+}));
+
+//의뢰 상세보기 페이지 _ 의뢰자
+router.get('/detail/client', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_client.html'));
+}));
+
+//의뢰 상세보기 페이지 _ 프리랜서
+router.get('/detail/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_freelancer.html'));
+}));
+
 
 //의뢰 상세 보기
-router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/detail/admin', wrapper.asyncMiddleware(async (req, res, next) => {
+
     const rNum = req.body.rNum;
     // const queryResult = await db.select({
     //     from: 'REQ_DOC',
@@ -337,7 +354,7 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult2 = await db.select({
         from: 'REQ_ABILITY',
         what : ['*'],
-        where: {R_NUM :rNum}
+        where: {R_NUM : rNum}
     });
     //
     // const result = {

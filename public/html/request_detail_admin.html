@@ -2,9 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type ="text/javascript">
+        $(document).ready(function() {
+            //$('#request_table').find('tr:gt(0)').remove()
+            $.ajax({
+                type: 'post',
+                url: '/request/detail/admin',
+                data: {},
+                success: function(data) {
+                    const cols = ['LANGUAGE', 'COMPETENCE'];
+                    for (const row of data) {
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#detail_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        })
+    </script>
 </head>
 <body>
-$END$
+    <h1  style = "text-align: center;">의뢰 세부사항</h1>
+    <div>
+        <!--<table id = "document_table" style ="width:100%">-->
+            <!--<tr>-->
+                <!--<td> 의뢰 문서</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <table id="detail_table" style="width: 100%;">
+            <tr>
+                <th>언어</th>
+                <th>능숙도</th>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
