@@ -12,12 +12,6 @@
     <script type="text/javascript">
         function showAll() {
             $('#request_table').find('tr:gt(0)').remove();
-            $(document).ready(function(){
-                $('table tr').click(function(){
-                    window.location = $(this).data('href');
-                    return false;
-                });
-            });
             $.ajax({
                 type: 'post',
                 url: '/request/list',
@@ -27,8 +21,8 @@
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
-                        //let newTr = '<tr onclick="location.href='http:localhost:3000/request/register'">';
-                        let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        // let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        let newTr = '<tr onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')"></tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
@@ -46,11 +40,14 @@
         function getDetail(rNum) {
             $.ajax({
                 type: 'post',
-                url: '/request/detail/admin',
+                url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
-                    window.open("http://localhost:3000/request/detail/admin")
-
+                    $('div.modal-body').empty();
+                    // 여기서 data 자리에 엘리먼트 집어넣으면 됨
+                    // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
+                    $('div.modal-body').append('<button type="button" onclick="apply(\'' + rNum + '\');">지원하기</button>');
+                    $('#detail_modal').modal('show');
                 },
                 error: function(err) {
                     console.log(err);
@@ -193,6 +190,19 @@
             </tr>
         </table>
     </div>
+    <!--여기가 팝업 부분 - 평소엔 안보이다가 getDetail 함수에서 show 하면 팝업으로 올라옴-->
+    <!--내용은 modal-body 에 넣으면 됨-->
+    <div id="detail_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    의뢰 상세보기
+                </div>
+                <div class="modal-body">
 
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

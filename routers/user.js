@@ -58,32 +58,28 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
                      attributes: ['ID', 'PW', 'SALT', 'PHONE', 'NAME', 'TYPE', 'CAREER', 'AGE', 'MAJOR'],
                      values: [id, pw, salt, phone, name, type, career, age, major]
                  });
-                 if (queryResult == 'success') {
-                     if (typeof language == 'object') {
-                         for (let i = 0; i < language.length; i++) {
-                             if (language[i]) {
-                                 queryResult = await db.insert({
-                                     into: 'F_ABILITY',
-                                     attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                     values: [id, language[i], competence[i]],
-                                 });
-                             }
+                 if (typeof language == 'object') {
+                     for (let i = 0; i < language.length; i++) {
+                         if (language[i]) {
+                             queryResult = await db.insert({
+                                 into: 'F_ABILITY',
+                                 attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                 values: [id, language[i], competence[i]],
+                             });
                          }
-                     } else {
-                         queryResult = await db.insert({
-                             into: 'F_ABILITY',
-                             attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                             values: [id, language, competence],
-                         });
                      }
-                 }
-                 if (queryResult == 'success') {
+                 } else {
                      queryResult = await db.insert({
-                         into: 'OUTER_PORTFOLIO',
-                         attributes: ['F_ID', 'CONTENT'],
-                         values: [id, portfolio]
-                     })
+                         into: 'F_ABILITY',
+                         attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                         values: [id, language, competence],
+                     });
                  }
+                 queryResult = await db.insert({
+                     into: 'OUTER_PORTFOLIO',
+                     attributes: ['F_ID', 'CONTENT'],
+                     values: [id, portfolio]
+                 })
              } else {
                  queryResult = await db.insert({
                      into: 'USER',
@@ -200,34 +196,32 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                             ID: id
                         }
                     });
-                    if (queryResult == 'success') {
-                        queryResult = await db.delete({
-                            from: 'F_ABILITY',
-                            where: {
-                                F_ID: id
-                            }
-                        });
-                        if (typeof language == 'object') {
-                            for (let i = 0; i < language.length; i++) {
-                                if (language[i]) {
-                                    queryResult = await db.insert({
-                                        into: 'F_ABILITY',
-                                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                        values: [id, language[i], competence[i]],
-                                    });
-                                }
-                            }
-                        } else {
-                            if (language) {
+                    queryResult = await db.delete({
+                        from: 'F_ABILITY',
+                        where: {
+                            F_ID: id
+                        }
+                    });
+                    if (typeof language == 'object') {
+                        for (let i = 0; i < language.length; i++) {
+                            if (language[i]) {
                                 queryResult = await db.insert({
                                     into: 'F_ABILITY',
                                     attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                    values: [id, language, competence],
+                                    values: [id, language[i], competence[i]],
                                 });
                             }
                         }
+                    } else {
+                        if (language) {
+                            queryResult = await db.insert({
+                                into: 'F_ABILITY',
+                                attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                                values: [id, language, competence],
+                            });
+                        }
                     }
-                    if (queryResult == 'success' && req.file) {
+                    if (req.file) {
                         queryResult = await db.delete({
                             from: 'OUTER_PORTFOLIO',
                             where: {
@@ -279,34 +273,32 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                     ID: id
                 }
             });
-            if (queryResult == 'success') {
-                queryResult = await db.delete({
-                    from: 'F_ABILITY',
-                    where: {
-                        F_ID: id
-                    }
-                });
-                if (typeof language == 'object') {
-                    for (let i = 0; i < language.length; i++) {
-                        if (language[i]) {
-                            queryResult = await db.insert({
-                                into: 'F_ABILITY',
-                                attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                values: [id, language[i], competence[i]],
-                            });
-                        }
-                    }
-                } else {
-                    if (language) {
+            queryResult = await db.delete({
+                from: 'F_ABILITY',
+                where: {
+                    F_ID: id
+                }
+            });
+            if (typeof language == 'object') {
+                for (let i = 0; i < language.length; i++) {
+                    if (language[i]) {
                         queryResult = await db.insert({
                             into: 'F_ABILITY',
                             attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                            values: [id, language, competence],
+                            values: [id, language[i], competence[i]],
                         });
                     }
                 }
+            } else {
+                if (language) {
+                    queryResult = await db.insert({
+                        into: 'F_ABILITY',
+                        attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
+                        values: [id, language, competence],
+                    });
+                }
             }
-            if (queryResult == 'success' && req.file) {
+            if (req.file) {
                 queryResult = await db.delete({
                     from: 'OUTER_PORTFOLIO',
                     where: {

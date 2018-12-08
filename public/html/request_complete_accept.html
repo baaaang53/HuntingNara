@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const rNum = location.href.toString().split('?')[1].split('=')[1];
+            $('#report').click(function() {
+                window.open('/download/report?rNum=' + rNum);
+            });
+            $('#accept').click(function() {
+                $.ajax({
+                    type: 'post',
+                    url: '/request/complete/accept',
+                    data: {
+                        rNum: rNum
+                    },
+                    success: function(data, status) {
+                        if (data.success) {
+                            alert('평점을 입력해주세요');
+                            location.href = '/request/complete/rate?rNum=' + rNum;
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            });
+            $('#reject').click(function() {
+                $.ajax({
+                    type: 'post',
+                    url: '/request/complete/reject',
+                    data: {
+                        rNum: rNum
+                    },
+                    success: function(data, status) {
+                        if (data.success) {
+                            alert('거절사유를 입력해주세요');
+                            location.href = '/request/complete/reject?rNum=' + rNum;
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <h1>의뢰완료요청 보기</h1>
+    <div class="ask_detail">
+        <button type="button" id="report">보고서</button><br>
+        <button type="button" id="accept">수락</button>
+        <button type="button" id="reject">거절</button>
+    </div>
+</body>
+</html>
