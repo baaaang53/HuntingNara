@@ -10,6 +10,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
+
+
         function showAll() {
             $('#user_table').find('tr:gt(0)').remove();
             $.ajax({
@@ -21,8 +23,12 @@
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'http://localhost:3000/user/detail?rNum='+ row['ID'] +'\')">' + row[col] + '</td>';
+                            newTr += '<td>' + row[col] + '</td>';
                         }
+                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
+                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
+                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
+
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
@@ -44,8 +50,12 @@
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'http://localhost:3000/user/detail?rNum='+ row['ID'] +'\')">' + row[col] + '</td>';
+                            newTr += '<td>' + row[col] + '</td>';
                         }
+                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
+                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
+                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
+
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
@@ -62,23 +72,43 @@
                 type: 'post',
                 url: '/user/list_client',
                 data: {},
-                success: function (data) {
+                success: function(data) {
                     const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
                     for (const row of data) {
                         let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'http://localhost:3000/user/detail?rNum=' + row['ID'] + '\')">' + row[col] + '</td>';
+                            newTr += '<td>' + row[col] + '</td>';
                         }
+                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
+                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
+                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
+
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
                 },
-                error: function (err) {
+                error: function(err) {
                     console.log(err);
                     alert('오류가 발생하였습니다');
                 }
             });
         }
+
+        function deleteuser(id){
+            if(confirm("정말로 삭제하시겠습니까?")){
+                const User_id = id;
+                $.ajax({
+                    type : 'post',
+                    url : './delete_user',
+                    data : { user_id : User_id}
+                })
+                window.location.reload();
+            }
+            else{
+                return false;
+            }
+        }
+
 
 
 
@@ -89,12 +119,13 @@
     <h1 style = "text-align: center;">사용자 목록 보기</h1>
     <div>
         <button type="button" onclick="showAll();">전체보기</button>
-        <button type="button" onclick="showFreelancer()">프리랜서보기</button>
-        <button type="button" onclick="showClient()">의뢰인보기</button>
+        <button type="button" onclick="showFreelancer();">프리랜서보기</button>
+        <button type="button" onclick="showClient();">의뢰인보기</button>
     </div>
     <div>
         <table id="user_table" style="width: 100%;">
             <tr>
+
                 <th>ID</th>
                 <th>유형</th>
                 <th>이름</th>
@@ -103,6 +134,8 @@
                 <th>경력</th>
                 <th>나이</th>
                 <th>전공</th>
+                <th></th>
+                <th></th>
             </tr>
         </table>
     </div>

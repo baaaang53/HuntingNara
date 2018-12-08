@@ -12,10 +12,11 @@
     <!-- javascript -->
     <script type="text/javascript">
         $(document).ready(function () {
+            const userid = location.href.toString().split('?')[1].split('=')[1];
             $.ajax({
                 method: 'post',
-                url: '/user/info',
-                data: {},
+                url: '/user/info/admin',
+                data: { user_id : userid},
                 success: function(data, status) {
                     $('#type').val(data['type']);
                     $('#id').val(data['id']);
@@ -70,16 +71,17 @@
                 success: function(data, status) {
                     if (data.success) {
                         alert('회원정보 수정이 완료되었습니다');
-                        location.href = '../';
+                        location.href = './list';
+                        //window.history.back();
                     } else {
                         alert('회원정보 수정이 완료되지 않았습니다');
-                        location.href = './modify';
+                        location.href = './modify_admin';
                     }
                 },
                 error: function(error) {
                     console.log(error);
                     alert('회원정보 수정이 완료되지 않았습니다');
-                    location.href = './modify';
+                    location.href = './modify_admin';
                 }
             });
         }
