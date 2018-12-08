@@ -192,7 +192,7 @@ router.post('/modify', upload.array('document'), wrapper.asyncMiddleware(async (
 }));
 
 // 의뢰 목록 페이지 _관리자
-router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
+router.get('/list/admin', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_admin.html'))}));
 
 // 의뢰 목록 페이지 _ 프리랜서
