@@ -19,6 +19,8 @@
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
                     for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
                         let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
@@ -40,24 +42,10 @@
                 url: '/request/detail',
                 data: {rNum: rNum},
                 success: function(data, status) {
-                    console.log(JSON.stringify(data));
+                    $('div.modal-body').empty();
                     // 여기서 data 자리에 엘리먼트 집어넣으면 됨
                     // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
-
-                    // const cols = ['LANGUAGE', 'COMPETENCE'];
-                    // for (const row of data) {
-                    //     let newTr = '<tr>';
-                    //     for (const col of cols) {
-                    //         newTr += '<td>' + row[col] + '</td>';
-                    //     }
-                    //     newTr += '</tr>';
-                    //     $('#req_ability_table tr:last').after(newTr);
-                    // }
-
-
-                    var ability ="<h1>subin</h1>";
-                    $('div .modal-body').innerHTML = "<a>ability</a>";
-
+                    $('div.modal-body').append('<button type="button" onclick="apply(\'' + rNum + '\');">지원하기</button>');
                     $('#detail_modal').modal('show');
                 },
                 error: function(err) {
@@ -65,6 +53,28 @@
                 }
             });
         }
+
+        function apply(rNum) {
+            $.ajax({
+                type: 'post',
+                url: '/request/apply',
+                data: {
+                    rNum: rNum
+                },
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('지원되었습니다');
+                    } else {
+                        alert('지원되지 않았습니다');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('지원되지 않았습니다');
+                }
+            });
+        }
+
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("request_table");
@@ -188,13 +198,7 @@
                     의뢰 상세보기
                 </div>
                 <div class="modal-body">
-                    의뢰 문서<br>
-                    <table id = "request_detail" style="width: 100%;">
-                        <tr>
-                            <th> 언어 </th>
-                            <th> 능숙도 </th>
-                        </tr>
-                    </table>
+
                 </div>
             </div>
         </div>

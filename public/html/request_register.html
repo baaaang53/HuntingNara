@@ -14,23 +14,32 @@
             $('fieldset.language_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
         }
 
-        function addReqDoc() {
-            $('#req_doc_form input[type="submit"]').before('<input type="file" name="req_doc"><br><br>');
+        function addDocument() {
+            $('fieldset.document_form').append('<input type="file" name="document"><br><br>');
         }
 
         function submitForm() {
+            const formData = new FormData();
+            for (const input of $('#req_reg input').not($('#req_reg input[type="file"]'))) {
+                formData.append(input.name, input.value);
+            }
+            for (const input of $('#req_reg input[type="file"]')) {
+                formData.append(input.name, input.files[0]);
+            }
             $.ajax({
                 type: 'post',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                async: false,
                 url: '/request/register',
-                data: $('#req_reg').serialize(),
+                data: formData,
                 success: function(data, status) {
-                    console.log('onsuccess');
-                    console.log(data);
                     if (data.success) {
                         alert('의뢰등록이 완료되었습니다');
                         location.href = '../';
                     } else {
-                        alert('의뢰등록이 완료되지 않았습니다');
+                        alert('의뢰등록 완료되지 않았습니다');
                         location.href = './register';
                     }
                 },
@@ -52,9 +61,9 @@
             &emsp;의뢰비용:
             <input type="number" name="cost" min="0" required> 원<br><br>
             &emsp;시작날짜:
-            <input type="date" name="s_date" value="2018-11-28" required><br><br>
+            <input type="date" name="s_date" value="2018-12-13" required><br><br>
             &emsp;마감날짜:
-            <input type="date" name="e_date" value="2018-11-28" required><br><br>
+            <input type="date" name="e_date" value="2018-12-13" required><br><br>
             &emsp;<strong>요구사항</strong><br>
             &emsp;필요경력:
             <input type="number" name="career" min="0" required>년<br><br>
@@ -64,14 +73,14 @@
                 <input type="text" name="language">
                 능숙도(0~5):
                 <input type="number" name="competence" min="0" max="5">
-                <input type="button" value="+" onclick="addLanguage();"><br><br>
+                <button type="button" onclick="addLanguage();">+</button><br><br>
             </fieldset>
-        </form>
-        <form id="req_doc_form" method="post" enctype="multipart/form-data" action="/upload/req_doc" onsubmit="submitForm();">
-            &emsp;의뢰문서:
-            <input type="file" name="req_doc">
-            <input type="button" value="+" onclick="addReqDoc();"><br><br>
-            <input type="submit" value="등록하기">
+            <fieldset class="document_form" form="req_reg">
+                &emsp;의뢰문서:
+                <input type="file" name="document">
+                <button type="button" onclick="addDocument();">+</button><br><br>
+            </fieldset>
+            <button type="button" onclick="submitForm();">등록하기</button>
         </form>
     </div>
 </body>

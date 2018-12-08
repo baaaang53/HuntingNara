@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- javascript -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                method: 'post',
+                url: '/user/info',
+                data: {},
+                success: function(data, status) {
+                    $('#type').val(data['type']);
+                    $('#id').val(data['id']);
+                    $('#phone').val(data['phone']);
+                    $('#name').val(data['name']);
+                    if (data['type'] == 'freelancer') {
+                        $('fieldset.additional_form').show();
+                        $('fieldset.additional_form input').not('#portfolio').prop('required', true);
+                        $('#age').val(data['age']);
+                        $('#career').val(data['career']);
+                        $('#major').val(data['major']);
+                        for (let i=0; i<data['language'].length-1; i++) {
+                            addLanguage();
+                        }
+                        let i = 0;
+                        for (const input of $('input[name="language"]')) {
+                            input.value = data['language'][i];
+                            i++;
+                        }
+                        i = 0;
+                        for (const input of $('input[name="competence"]')) {
+                            input.value = data['competence'][i]
+                        }
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+
+        function addLanguage() {
+            $('fieldset.additional_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
+        }
+
+        function submitForm() {
+            const formData = new FormData();
+            for (const input of $('#register input').not($('#register input[type="file"]'))) {
+                formData.append(input.name, input.value);
+            }
+            for (const input of $('#register input[type="file"]')) {
+                formData.append(input.name, input.files[0]);
+            }
+            $.ajax({
+                type: 'post',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                async: false,
+                url: '/user/modify',
+                data: formData,
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('회원정보 수정이 완료되었습니다');
+                        location.href = '../';
+                    } else {
+                        alert('회원정보 수정이 완료되지 않았습니다');
+                        location.href = './modify';
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('회원정보 수정이 완료되지 않았습니다');
+                    location.href = './modify';
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+<div class="register_form">
+    <h1 style = "text-align: center;">회원정보 수정</h1><br><br>
+    <form id="register"> <!--action="/user/register" method="post" enctype="multipart/form-data" onsubmit="submitForm();"-->
+        <input type="text" name="type" id="type" hidden>
+        &emsp;아이디:
+        <input type="text" name="id" id="id" readonly required><br><br>
+        &emsp;비밀번호:
+        <input type="password" name="pw" id="pw"><br><br>
+        &emsp;이름:
+        <input type="text" name="name" id="name" required><br><br>
+        &emsp;휴대폰:
+        <input type="phone" name="phone" id="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
+        <fieldset class="additional_form" form="register" hidden>
+            &emsp;나이:
+            <input type="number" name="age" id="age" min="0" max="200"><br><br>
+            &emsp;개발 경력(년):
+            <input type="number" name="career" id="career" min="0" max="200"><br><br>
+            &emsp;전공 학과:
+            <input type="text" name="major" id="major"><br><br>
+            &emsp;새 포트폴리오:
+            <input type="file" name="portfolio" id="portfolio">
+            &emsp;<button type="button" name="oldPortfolio" id="oldPortfolio" onclick="window.open('/download/outer_portfolio/freelancer');">기존 포트폴리오</button><br><br>
+            &emsp;언어별 능숙도<br><br>
+            &emsp;언어:
+            <input type="text" name="language" id="language">
+            &emsp;능숙도(0~5):
+            <input type="number" name="competence" id="competence" min="0" max="5">
+            <button type="button" onclick="addLanguage();">+</button><br><br>
+        </fieldset>
+        <button type="button" onclick="submitForm();">수정하기</button>
+    </form>
+</div>
+</body>
+</html>

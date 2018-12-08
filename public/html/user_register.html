@@ -13,6 +13,10 @@
     <script type="text/javascript">
         // 회원가입 - 아이디 중복 검사
         function checkId() {
+            if($('#id').val()===""){
+                alert('입력된 아이디가 없습니다');
+                return false;
+            }
             $.ajax({
                 type: 'post',
                 url: '/user/checkId',
@@ -38,13 +42,9 @@
             if ($('#freelancer')[0].checked) {
                 $('fieldset.additional_form').show();
                 $('fieldset.additional_form input').prop('required', true);
-                $('#portfolio_form').show();
-                $('#portfolio_form input[type="file"]').prop('required', true);
             } else {
                 $('fieldset.additional_form').hide();
                 $('fieldset.additional_form input').prop('required', false);
-                $('#portfolio_form').hide();
-                $('#portfolio_form input[type="file"]').prop('required', false);
             }
         }
 
@@ -53,16 +53,74 @@
         }
 
         function submitForm() {
+            var radioflag = false;
             if (!$('#id').prop('readonly')) {
                 alert('아이디 중복검사를 해주세요');
                 return false;
             } else {
-                $('#portfolio_form input[type="text"]').val($('#id').val());
-
+                const formData = new FormData();
+                for (const input of $('#register input[type="radio"]')) {
+                    if(input.checked) {
+                        formData.append(input.name, input.value);
+                        radioflag = false;}
+                    else if(radioflag) {
+                        alert("회원 타입을 선택해주세요")
+                        return false;}
+                    else{
+                        radioflag = true;}
+                }
+                for (const input of $('#register input').not($('#register input[type="radio"]')).not($('#register input[type="file"]'))) {
+                    if(input.value === ""){
+                        switch(input.name){
+                            case("password"):
+                                alert("입력된 비밀번호가 없습니다");
+                                return false;
+                            case("name"):
+                                alert("입력된 이름이 없습니다");
+                                return false;
+                            case("phone"):
+                                alert("입력된 전화번호가 없습니다");
+                                return false;
+                        }
+                        if($('#freelancer')[0].checked){
+                            switch(input.name){
+                                case("age"):
+                                    alert("입력된 나이가 없습니다");
+                                    return false;
+                                case("career"):
+                                    alert("입력된 경력이 없습니다");
+                                    return false;
+                                case("major"):
+                                    alert("입력된 전공학과가 없습니다");
+                                    return false;
+                                case("language"):
+                                    alert("최소 하나 이상의 능숙한 언어를 입력해주세요");
+                                    return false;
+                                case("competence"):
+                                    alert("입력한 언어의 능숙도를 입력해주세요");
+                                    return false;
+                            }
+                        }
+                    }
+                    formData.append(input.name, input.value);
+                }
+                if ($('#freelancer')[0].checked) {
+                    for (const input of $('#register input[type="file"]')) {
+                        if (input.files.length === 0) {
+                            alert("포트폴리오를 업로드 해주세요")
+                            return false;
+                        }
+                        formData.append(input.name, input.files[0]);
+                    }
+                }
                 $.ajax({
                     type: 'post',
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    async: false,
                     url: '/user/register',
-                    data: $('#register').serialize(),
+                    data: formData,
                     success: function(data, status) {
                         if (data.success) {
                             alert('회원가입이 완료되었습니다');
@@ -88,17 +146,17 @@
         <h1 style = "text-align: center;">회원가입</h1><br><br>
         <form id="register"> <!--action="/user/register" method="post" enctype="multipart/form-data" onsubmit="submitForm();"-->
             &emsp;회원유형:
-            <input type="radio" name="type" value="client" onchange="moreInfo();" required>의뢰인
-            <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();">프리랜서<br><br>
+            <input type="radio" name="type" value="client" onchange="moreInfo();" />의뢰인
+            <input type="radio" name="type" id="freelancer" value="freelancer" onchange="moreInfo();" />프리랜서<br><br>
             &emsp;아이디:
-            <input type="text" name="id" id="id" required><br><br>
-            &emsp;<input type="button" value="중복검사" onclick="checkId();"><br><br>
-            &emsp;비밀번호:
-            <input type="password" name="pw" id="pw" required><br><br>
+            <input type="text" name="id" id="id" required /><br><br>
+            <button type="button" onclick="checkId();">중복검사</button><br><br>
+            비밀번호:
+            <input type="password" name="pw" id="pw" required /><br><br>
             &emsp;이름:
-            <input type="text" name="name" required><br><br>
+            <input type="text" name="name" required/><br><br>
             &emsp;휴대폰:
-            <input type="phone" name="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required><br><br>
+            <input type="phone" name="phone" placeholder="'-'를 제외한 숫자만 입력하세요" required/><br><br>
             <fieldset class="additional_form" form="register" hidden>
                 &emsp;나이:
                 <input type="number" name="age" min="0" max="200"><br><br>
@@ -106,20 +164,16 @@
                 <input type="number" name="career" min="0" max="200"><br><br>
                 &emsp;전공 학과:
                 <input type="text" name="major"><br><br>
+                &emsp;포트폴리오:
+                <input type="file" name="portfolio"><br><br>
                 &emsp;언어별 능숙도<br><br>
                 &emsp;언어:
                 <input type="text" name="language">
                 &emsp;능숙도(0~5):
                 <input type="number" name="competence" min="0" max="5">
-                <input type="button" value="언어 추가하기" onclick="addLanguage();"><br><br>
+                <button type="button" onclick="addLanguage();">+</button><br><br>
             </fieldset>
-            <input type="text" name="portfolio" id="portfolio" hidden>
-        </form>
-        <form id="portfolio_form" method="post" enctype="multipart/form-data" action="/upload/portfolio" onsubmit="submitForm();">
-            &emsp;포트폴리오:
-            <input type="file" name="portfolio"><br><br>
-            <input type="text" name="id" hidden>
-            <input type="submit" value="가입하기">
+            <button type="button" onclick="submitForm();">가입하기</button>
         </form>
     </div>
 </body>
