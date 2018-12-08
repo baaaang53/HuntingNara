@@ -21,7 +21,8 @@
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
-                        let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        // let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        let newTr = '<tr onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')"></tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }

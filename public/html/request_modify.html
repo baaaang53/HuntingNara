@@ -11,7 +11,7 @@
 
     <script type="text/javascript">
     $(document).ready(function () {
-        const rNum = 5;     // location.href 로 대체
+        const rNum = location.href.toString().split('?')[1].split('=')[1];     // location.href 로 대체
         $.ajax({
             method: 'post',
             url: '/request/info',

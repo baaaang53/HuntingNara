@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function submitRate() {
+            const rNum = location.href.toString().split('?')[1].split('=')[1];
+            $.ajax({
+                method: 'post',
+                url: '/request/complete/rate',
+                data: {
+                    rNum: rNum,
+                    rate: $('#rate').val()
+                },
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('평점이 입력되었습니다');
+                        window.close();
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>평점을 입력해주세요</h1>
+    <div>
+        평점(0~5):
+        <input type="number" id="rate" min="0" max="5" required><br><br>
+        <button type="button" onclick="submitRate();">입력하기</button>
+    </div>
+
+</body>
+</html>
