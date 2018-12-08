@@ -86,6 +86,9 @@ router.post('/delete', wrapper.asyncMiddleware(async (req, res, next) => {
 router.get('/modify', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_modify.html'));
 }));
+router.get('/modify_admin', wrapper.asyncMiddleware(async (req,res,next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_modify_admin.html'));
+}))
 
 // 의뢰 정보
 router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -470,7 +473,6 @@ router.post('/list/admin', wrapper.asyncMiddleware(async (req, res, next) => {
     });
     res.json(queryResult);
 }));
-
 router.post('/list/rejected', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',

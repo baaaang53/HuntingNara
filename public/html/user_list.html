@@ -19,16 +19,14 @@
                 url: '/user/list_all',
                 data: {},
                 success: function(data) {
-                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
+                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', 'MODIFY', 'DELETE'];
                     for (const row of data) {
+                        row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
+                        row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\',\''+row['STATE']+'\')">삭제</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
-                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
-                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
-
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
@@ -48,14 +46,12 @@
                 success: function(data) {
                     const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
                     for (const row of data) {
+                        row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
+                        row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\',\''+row['STATE']+'\')">삭제</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
-                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
-                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
-
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
@@ -73,16 +69,14 @@
                 url: '/user/list_client',
                 data: {},
                 success: function(data) {
-                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
+                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', ''];
                     for (const row of data) {
+                        row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
+                        row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\')">삭제</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        //newTr += '<td onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\'>' + row[col] + '</td>';
-                        newTr += '<td><button onclick="window.open(\'http://localhost:3000/user/modify_admin?user_id='+ row['ID'] +'\')"> 수정 </button> </td>';
-                        newTr += '<td><button type="button" onclick ="deleteuser(\''+row['ID']+'\')">삭제</button></td>';
-
                         newTr += '</tr>';
                         $('#user_table tr:last').after(newTr);
                     }
@@ -94,17 +88,32 @@
             });
         }
 
-        function deleteuser(id){
-            if(confirm("정말로 삭제하시겠습니까?")){
+        function delete_user(id) {
+            $.ajax({
+                type: "post",
+                url: './working',
+                data: {user_id: id},
+                success: function (data) {
+                    if (data[0]['count(*)'] !== 0) {
+                        alert("진행중인 의뢰에 참여하고 있는 사용자는 삭제할 수 없습니다.");
+                        return false;
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+            if (confirm("정말로 삭제하시겠습니까?")) {
                 const User_id = id;
                 $.ajax({
-                    type : 'post',
-                    url : './delete_user',
-                    data : { user_id : User_id}
+                    type: 'post',
+                    url: './delete_user',
+                    data: {user_id: User_id}
                 })
                 window.location.reload();
             }
-            else{
+            else {
                 return false;
             }
         }
