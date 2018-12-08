@@ -193,7 +193,7 @@ router.post('/modify', upload.array('document'), wrapper.asyncMiddleware(async (
 
 // 의뢰 목록 페이지 _관리자
 router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list.html'))}));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list_admin.html'))}));
 
 // 의뢰 목록 페이지 _ 프리랜서
 router.get('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -577,6 +577,14 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
         result['LANGUAGE'][i] = queryResult[i]['LANGUAGE'];
         result['COMPETENCE'][i] = queryResult[i]['COMPETENCE'];
     }
+    queryResult = await db.select({
+        from: 'REQ_DOC',
+        what: ['COUNT(FILE)'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    result['COUNT(FILE)'] = queryResult[0]['COUNT(FILE)'];
     res.json(result);
 }));
 

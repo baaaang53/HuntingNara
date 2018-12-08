@@ -27,9 +27,9 @@
                     for (let i=0; i<data.LANGUAGE.length; i++) {
                         $('#language tr:last').after ('<tr><td>' + data.LANGUAGE[i]+'</td><td>' + data.COMPETENCE[i] + '</td></tr>');
                     }
-                    // for (let i=0; i<data.file.length; i++) {
-                    //     $('#request_document tr:last').after('<tr><td>'+ data.file[i] + '</td></tr>');
-                    // }
+                    for (let i=0; i<data['COUNT(FILE)']; i++) {
+                        $('#request_document tr:last').after('<tr><td><button type="button" onclick="window.open(\'/download/req_doc?rNum=' + rNum + '&i=' + i + '\')">다운로드</button></td></tr>');
+                    }
                 },
                 error: function (err) {
                     console.log(err);
