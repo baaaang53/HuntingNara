@@ -463,7 +463,7 @@ router.post('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) =
 
 
 // 의뢰 목록 요청 _ 관리자 -> 전체 의뢰 목록, 거절된 의뢰 목록
-router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/list/admin', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*']
@@ -539,18 +539,10 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
 
 // 의뢰 상세보기 페이지 _ 관리자
 router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
-    if (req.session.user_id == 'client') {
-        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_client.html'));
-    }
-    else if (req.session.user_id =='freelancer') {
-        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_freelancer.html'));
-    }
-    else if (req.session.user_id =='admin') {
-        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_admin.html'));
-    }
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail.html'));
 }));
 
-// 의뢰 상세보기 _ 관리자
+// 의뢰 상세보기
 router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
     let queryResult = await db.select({

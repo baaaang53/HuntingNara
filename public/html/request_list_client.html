@@ -10,7 +10,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-
+        $(document).ready(function() {
+            show_client();
+        });
         function show_client() {
             $('#request_table').find('tr:gt(0)').remove()
             $.ajax({
@@ -18,11 +20,18 @@
                 url: '/request/list/client',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE', 'DETAIL'];
                     for (const row of data) {
-                        let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
+                        let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] +'\')">' + row[col] + '</td>';                        }
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        if (row['STATE'] == 'applying') {
+                            newTr += '<td><button type="button" onclick="window.open(\'/request/applier/list?rNum=' + row['R_NUM'] + '\')">지원자목록</button></td>'
+                        }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
                     }

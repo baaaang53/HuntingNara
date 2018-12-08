@@ -10,7 +10,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
-
+        $(document).ready(function() {
+            show_registered();
+        });
         function show_registered() {
             $('#request_table').find('tr:gt(0)').remove()
             $.ajax({
@@ -18,11 +20,18 @@
                 url: '/request/list/registered',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER',' STATE'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER',' STATE', 'DETAIL'];
                     for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] +'\')">' + row[col] + '</td>';                        }
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        if (row['F_ID'] == 'admin') {
+                            newTr += '<td><button type="button" onclick="apply(' + row['R_NUM'] + ')">지원하기</button></td>';
+                        }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
                     }
@@ -41,11 +50,17 @@
                 url: '/request/list/freelancer/possible',
                 data : {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE', 'DETAIL'];
                     for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
+                        }
+                        if (row['F_ID'] == 'admin') {
+                            newTr += '<td><button type="button" onclick="apply(' + row['R_NUM'] + ')">지원하기</button></td>';
                         }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
@@ -54,6 +69,27 @@
                 error: function(err) {
                     console.log(err);
                     alert('오류가 발생하였습니다');
+                }
+            });
+        }
+
+        function apply(rNum) {
+            $.ajax({
+                type: 'post',
+                url: '/request/apply/ask',
+                data: {
+                    rNum: rNum
+                },
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('지원되었습니다');
+                    } else {
+                        alert('지원되지 않았습니다');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('지원되지 않았습니다');
                 }
             });
         }
@@ -171,6 +207,7 @@
                 <button onclick="sortcost_rev();">▼</button></th>
             <th>요구경력</th>
             <th>의뢰상태</th>
+            <th>상세보기</th>
         </tr>
     </table>
 </div>
