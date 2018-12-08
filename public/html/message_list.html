@@ -15,7 +15,7 @@
         })
 
         function getMessage() {
-            $('#message_table tr:gt(0)').remove();
+            $('#message_table').find('tr:gt(0)').remove();
             $.ajax({
                 type: 'post',
                 url: '/message/list',
@@ -24,8 +24,7 @@
                     const cols = ['DATETIME', 'NAME'];
                     for (const row of data) {
                         row['DATETIME'] = new Date(row['DATETIME']).toLocaleDateString('ko-KR');
-                        let newTr = '<tr onclick="getDetail(\'' + row['CONTENT'] + '\', ' +
-                            row['M_NUM'] + ')">';
+                        let newTr = '<tr>';
                         const title = row['CONTENT'].slice(0, 9) + '...';
                         newTr += '<td>' + title + '</td>';
                         for (const col of cols) {
@@ -33,7 +32,7 @@
                         }
                         if (row['STATE'] == 'unread') newTr += '<td>읽지않음</td>';
                         else if (row['STATE'] == 'read') newTr += '<td>읽음</td>';
-                        newTr += '</tr>';
+                        newTr += '<td><button onclick="getDetail(\'' + row['CONTENT'] + '\', \'' + row['M_NUM'] + '\')">상세보기</button></td></tr>';
                         $('#message_table tr:last').after(newTr);
                     }
                 },
@@ -78,6 +77,7 @@
                 <th>날짜</th>
                 <th>보낸이</th>
                 <th>상태</th>
+                <th>상세보기</th>
             </tr>
         </table>
     </div>

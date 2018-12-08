@@ -70,6 +70,18 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
     res.json({success: queryResult == 'success'})
 }));
 
+// 의뢰 삭제
+router.post('/delete', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    const queryResult = await db.delete({
+        from: 'REQUEST',
+        where: {
+            R_NUM: rNum
+        }
+    });
+    res.json({success: queryResult == 'success'});
+}));
+
 // 의뢰 수정 페이지
 router.get('/modify', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_modify.html'));
@@ -544,5 +556,89 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(result);
 }));
 
+
+// 의뢰 지원자 리스트 페이지
+router.get('/applier/list', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_applier_list.html'));
+}));
+
+// 의뢰 지원자 리스트
+router.post('/applier/list', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    let queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['STATE'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    if (queryResult[0]['STATE'] != 'applying') {
+        res.json({success: false});
+        return;
+    }
+    queryResult = await db.join({
+        from: 'APPLIED_REQ',
+        select: ['USER.ID', 'USER.NAME', 'USER.CAREER', 'USER.RATE'],
+        join: 'LEFT JOIN USER',
+        on: {
+            'APPLIED_REQ.F_ID': 'USER.ID'
+        },
+        where: {
+            'APPLIED_REQ.R_NUM': rNum
+        }
+    });
+    res.json(queryResult);
+}));
+
+// 의뢰 지원자 상세보기 페이지
+router.get('/applier/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_applier_detail.html'));
+}));
+
+// 의뢰 지원자 상세보기
+router.post('/applier/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    const fId = req.body.fId;
+    let queryResult = await db.select({
+        from: 'USER',
+        what: ['PHONE', 'NAME', 'RATE', 'CAREER', 'AGE', 'MAJOR'],
+        where: {
+            ID: fId
+        }
+    });
+    const result = {};
+    for (const col in queryResult[0]) {
+        result[col] = queryResult[0][col];
+    }
+    queryResult = await db.select({
+        from: 'F_ABILITY',
+        what: ['LANGUAGE', 'COMPETENCE'],
+        where: {
+            F_ID: fId
+        }
+    });
+    result['LANGUAGE'] = [];
+    result['COMPETENCE'] = [];
+    for (let i=0; i<queryResult.length; i++) {
+        result['LANGUAGE'][i] = queryResult[i]['LANGUAGE'];
+        result['COMPETENCE'][i] = queryResult[i]['COMPETENCE'];
+    }
+    queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['TITLE', 'S_DATE', 'E_DATE', 'F_RATE', 'R_NUM'],
+        where: {
+            F_ID: fId,
+            STATE: 'complete'
+        }
+    });
+    result['INNER_PORTFOLIO'] = []
+    for (let i=0; i<queryResult.length; i++) {
+        const request = {};
+        for (const col in queryResult[i]) {
+            request[col] = queryResult[i][col];
+        }
+        result['INNER_PORTFOLIO'].push(request);
+    }
+    res.json(result);
+}));
 
 module.exports = router;

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const fId = location.href.toString().split('?')[1].split('=')[1];
+            $('#outer_portfolio').click(function() {
+                window.open('/download/outer_portfolio/client?fId=' + fId);
+            });
+            $.ajax({
+                type: 'post',
+                url: '/request/applier/detail',
+                data: {
+                    fId: fId
+                },
+                success: function(data, status) {
+                    $('#name').text(data.NAME);
+                    $('#age').text(data.AGE);
+                    $('#phone').text(data.PHONE);
+                    $('#major').text(data.MAJOR);
+                    $('#career').text(data.CAREER);
+                    $('#rate').text(data.RATE);
+                    $('#language').find('tr:gt(0)').remove();
+                    for (let i=0; i<data.LANGUAGE.length; i++) {
+                        $('#language tr:last').after('<tr><td>' + data.LANGUAGE[i] + '</td><td>' + data.COMPETENCE[i] + '</td></tr>');
+                    }
+                    $('#inner_portfolio').find('tr:gt(0)').remove();
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'RATE'];
+                    for (let i=0; i<data.INNER_PORTFOLIO.length; i++) {
+                        data.INNER_PORTFOLIO[i]['S_DATE'] = new Date(data.INNER_PORTFOLIO[i]['S_DATE']).toLocaleDateString('ko-KR');
+                        data.INNER_PORTFOLIO[i]['E_DATE'] = new Date(data.INNER_PORTFOLIO[i]['E_DATE']).toLocaleDateString('ko-KR');
+                        data.INNER_PORTFOLIO[i]['R_NUM'] = '<button type="button" onclick="window.open(\'/download/report?rNum=' + data.INNER_PORTFOLIO[i]['R_NUM'] + '\')">다운로드</button>'
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + data.INNER_PORTFOLIO[i][col] + '</td>';
+                        }
+                        $('#inner_portfolio tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>지원자 상세보기</h1>
+    <div>
+        이름:
+        <a id="name"></a><br>
+        나이:
+        <a id="age"></a><br>
+        휴대폰:
+        <a id="phone"></a><br>
+        전공:
+        <a id="major"></a><br>
+        경력(년):
+        <a id="career"></a><br>
+        평점:
+        <a id="rage"></a><br>
+        언어별 능숙도:
+        <table id="language" style="width: 50%;">
+            <tr>
+                <th>언어</th>
+                <th>능숙도(0~5)</th>
+            </tr>
+        </table><br>
+        내부 포트폴리오:
+        <table id="inner_portfolio" style="width: 50%;">
+            <tr>
+                <th>제목</th>
+                <th>시작날짜</th>
+                <th>종료날짜</th>
+                <th>보고서</th>
+                <th>평점</th>
+            </tr>
+        </table><br>
+        외부 포트폴리오:
+        <button type="button" id="outer_portfolio">다운로드</button>
+    </div>
+
+</body>
+</html>
