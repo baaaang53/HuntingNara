@@ -529,32 +529,49 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
 //     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
 // }));
 
-// 의뢰 상세보기 페이지
+// 의뢰 상세보기 페이지 _ 관리자
 router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail.html'));
+    if (req.session.user_id == 'client') {
+        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_client.html'));
+    }
+    else if (req.session.user_id =='freelancer') {
+        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_freelancer.html'));
+    }
+    else if (req.session.user_id =='admin') {
+        res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail_admin.html'));
+    }
 }));
 
-// 의뢰 상세보기
+// 의뢰 상세보기 _ 관리자
 router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
-    const queryResult = await db.select({
-        from: 'REQ_DOC',
-        what : ['*'],
-        where: {R_NUM :rNum}
+    let queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['TITLE', 'F_ID', 'C_ID', 'S_DATE', 'E_DATE', 'COST', 'CAREER'],
+        where: {
+            R_NUM: rNum
+        }
     });
-    const queryResult2 = await db.select({
-        from: 'REQ_ABILITY',
-        what : ['*'],
-        where: {R_NUM :rNum}
-    });
-
-    const result = {
-        req_doc : queryResult,
-        req_ability : queryResult2
+    const result = {};
+    for (const col in queryResult[0]) {
+        result[col] = queryResult[0][col];
     }
-
+    queryResult = await db.select({
+        from: 'REQ_ABILITY',
+        what: ['LANGUAGE', 'COMPETENCE'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    result['LANGUAGE'] = [];
+    result['COMPETENCE'] = [];
+    for (let i=0; i<queryResult.length; i++) {
+        result['LANGUAGE'][i] = queryResult[i]['LANGUAGE'];
+        result['COMPETENCE'][i] = queryResult[i]['COMPETENCE'];
+    }
     res.json(result);
 }));
+
 
 
 // 의뢰 지원자 리스트 페이지

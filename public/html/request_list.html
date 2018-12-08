@@ -22,9 +22,9 @@
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
                         // let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
-                        let newTr = '<tr onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')"></tr>';
+                        let newTr = '<tr>';
                         for (const col of cols) {
-                            newTr += '<td>' + row[col] + '</td>';
+                            newTr += '<td onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] +'\')">' + row[col] + '</td>';
                         }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
@@ -37,23 +37,21 @@
             });
         }
 
-        function getDetail(rNum) {
-            $.ajax({
-                type: 'post',
-                url: '/request/detail',
-                data: {rNum: rNum},
-                success: function(data, status) {
-                    $('div.modal-body').empty();
-                    // 여기서 data 자리에 엘리먼트 집어넣으면 됨
-                    // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
-                    $('div.modal-body').append('<button type="button" onclick="apply(\'' + rNum + '\');">지원하기</button>');
-                    $('#detail_modal').modal('show');
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        }
+        // function getDetail(rNum) {
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/request/detail',
+        //         data: {rNum: rNum},
+        //         success: function(data, status) {
+        //             // 여기서 data 자리에 엘리먼트 집어넣으면 됨
+        //             // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
+        //
+        //         },
+        //         error: function(err) {
+        //             console.log(err);
+        //         }
+        //     });
+        // }
 
         function apply(rNum) {
             $.ajax({
@@ -189,20 +187,6 @@
                 <th>의뢰상태</th>
             </tr>
         </table>
-    </div>
-    <!--여기가 팝업 부분 - 평소엔 안보이다가 getDetail 함수에서 show 하면 팝업으로 올라옴-->
-    <!--내용은 modal-body 에 넣으면 됨-->
-    <div id="detail_modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    의뢰 상세보기
-                </div>
-                <div class="modal-body">
-
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>

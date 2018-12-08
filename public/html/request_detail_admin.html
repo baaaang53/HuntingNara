@@ -1,4 +1,3 @@
-<!-- 이거 지금 필요 없음 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,68 +10,67 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type = "text/javascript">
-        function detail() {
+        $(document).ready(function () {
+            const rNum = location.href.toString().split('?')[1].split('=')[1];
             $.ajax({
                 type: 'post',
                 url: '/request/detail',
-                data: {},
-                success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', ['LANGUAGE','COMPETENCE'], ['FILE']];
-                    for (const row of data) {
-                        let newTr = '<tr>';
-                        for (const col of cols) {
-                            newTr += '<td>' + row[col] + '</td>';
-                        }
-                        newTr += '</tr>';
-                        $('#request_table tr:last').after(newTr);
+                data: {rNum: rNum},
+                success: function (data, status) {
+                    $('#title').text(data.TITLE);
+                    $('#f_id').text(data.F_ID);
+                    $('#c_id').text(data.C_ID);
+                    $('#s_date').text(data.S_DATE);
+                    $('#e_date').text(data.E_DATE);
+                    $('#cost').text(data.COST);
+                    $('#career').text(data.CAREER);
+                    for (let i=0; i<data.LANGUAGE.length; i++) {
+                        $('#language tr:last').after ('<tr><td>' + data.LANGUAGE[i]+'</td><td>' + data.COMPETENCE[i] + '</td></tr>');
                     }
+                    // for (let i=0; i<data.file.length; i++) {
+                    //     $('#request_document tr:last').after('<tr><td>'+ data.file[i] + '</td></tr>');
+                    // }
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                     alert('오류가 발생하였습니다');
                 }
             });
-        }
 
-        function apply(rNum) {
-            $.ajax({
-                type: 'post',
-                url: '/request/apply',
-                data: {
-                    rNum: rNum
-                },
-                success: function(data, status) {
-                    if (data.success) {
-                        alert('지원되었습니다');
-                    } else {
-                        alert('지원되지 않았습니다');
-                    }
-                },
-                error: function(err) {
-                    console.log(err);
-                    alert('지원되지 않았습니다');
-                }
-            });
-        }
+        })
+
 
     </script>
 </head>
 <body>
-<h1>의뢰 상세보기</h1>
-
-<div>
-    <table id="request_detail" style="width: 100%;">
-        <tr>
-            <th>제목</th>
-            <th>시작날짜</th>
-            <th>종료날짜</th>
-            <th>비용</th>
-            <th>요구경력</th>
-            <th>필요언어</th>
-            <th>능숙도</th>
-            <th>의뢰문서</th>
-        </tr>
-    </table>
-</div>
+    <h1>의뢰 상세보기</h1>
+    <div>
+        의뢰제목 :
+        <a id="title"></a><br>
+        담당 프리랜서 ID :
+        <a id="f_id"></a><br>
+        의뢰자 ID :
+        <a id="c_id"></a><br>
+        시작 날짜 :
+        <a id="s_date"></a><br>
+        종료 날짜 :
+        <a id="e_date"></a><br>
+        의뢰비용 :
+        <a id="cost"></a><br>
+        요구 경력 :
+        <a id="career"></a><br>
+        언어별 능숙도 :
+        <table id="language" style="width: 100%;">
+            <tr>
+                <th>언어</th>
+                <th>능숙도</th>
+            </tr>
+        </table>
+        <table id = "request_document" style = "width:50%">
+            <tr>
+                <th> 의뢰문서 </th>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
