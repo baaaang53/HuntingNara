@@ -11,13 +11,13 @@
 
     <script type="text/javascript">
     function submitReason() {
-        const rNum = location.href.split('?').split('=')[1];
+        const rNum = location.href.split('?')[1].split('=')[1];
         $.ajax({
             method: 'post',
-            url: '/complete/reject',
+            url: '/request/complete/reject',
             data: {
                 rNum: rNum,
-                rate: $('#reason').val()
+                reason: $('#reason').val()
             },
             success: function(data, status) {
                 if (data.success) {

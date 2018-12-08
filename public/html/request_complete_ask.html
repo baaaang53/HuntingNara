@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$$헌팅나라$$</title>
+
+    <!-- bootstrap including jquery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type = "text/javascript">
+        function submitAsk() {
+            const rNum = location.href.toString().split('?')[1].split('=')[1];
+            const formData = new FormData();
+            formData.append('rNum', rNum);
+            const input = $('#report')[0];
+            formData.append(input.name, input.files[0]);
+            $.ajax({
+                type: 'post',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                async: false,
+                url: '/request/complete/ask',
+                data: formData,
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('의뢰완료요청이 완료되었습니다');
+                        window.close();
+                    } else {
+                        alert('의뢰완료요청이 완료되지 않았습니다');
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('의뢰완료요청이 완료되지 않았습니다');
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="ask_complete_form">
+    <h1>&emsp;&emsp; 완료 요청하기</h1><br><br>
+    보고서 :
+    <input type="file" name="report" id="report"><br>
+    &emsp;<button type="button" onclick="submitAsk();">요청하기</button>
+</div>
+</body>
+</html>

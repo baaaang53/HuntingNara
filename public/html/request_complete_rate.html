@@ -11,10 +11,10 @@
 
     <script type="text/javascript">
         function submitRate() {
-            const rNum = location.href.split('?').split('=')[1];
+            const rNum = location.href.toString().split('?')[1].split('=')[1];
             $.ajax({
                 method: 'post',
-                url: '/complete/rate',
+                url: '/request/complete/rate',
                 data: {
                     rNum: rNum,
                     rate: $('#rate').val()

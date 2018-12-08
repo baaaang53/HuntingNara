@@ -245,8 +245,8 @@ router.post('/apply/accept', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 // 완료 요청 페이지
-router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
+router.get('/complete/ask', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_complete_ask.html'));
 }));
 
 // 완료 요청하기
@@ -264,6 +264,11 @@ router.post('/complete/ask', upload.single('report'), wrapper.asyncMiddleware(as
         }
     })
     res.json({success: queryResult == 'success'});
+}));
+
+// 완료 요청 수락 페이지
+router.get('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_complete_accept.html'));
 }));
 
 // 완료 요청 수락하기
@@ -288,17 +293,18 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     const id = req.session.user_id;
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
-    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type="button" onclick="window.open(\'/complete/rate?rNum=' + rNum +'\')"';        // 상세정보 페이지 보여주면 좋을 듯
+    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\" onclick=\\"window.open(\'/complete/rate?rNum=' + rNum +'\')\\"';        // 상세정보 페이지 보여주면 좋을 듯
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
         values: [content, new Date(), id, fId]
     })
+    res.json({success: queryResult == 'success'});
 }));
 
 // 의뢰 완료 평점 입력 페이지
 router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/complete_rate.html'));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_complete_rate.html'));
 }));
 
 // 의뢰 완료 평점 입력
@@ -327,9 +333,9 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
                 'REQUEST.R_NUM': rNum
             }
         });
-        const cId = queryResult[0]['REQUEST.C_ID'];
-        const newReqCount = queryResult[0]['USER.REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['USER.RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const cId = queryResult[0]['C_ID'];
+        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
+        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
@@ -362,9 +368,9 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
                 'REQUEST.R_NUM': rNum
             }
         });
-        const fId = queryResult[0]['REQUEST.F_ID'];
-        const newReqCount = queryResult[0]['USER.REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['USER.RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const fId = queryResult[0]['F_ID'];
+        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
+        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
@@ -381,7 +387,7 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
 
 // 의뢰 거절 사유 입력 페이지
 router.get('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '/public/html/complete_reject.html'));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_complete_reject.html'));
 }));
 
 // 의뢰 거절
