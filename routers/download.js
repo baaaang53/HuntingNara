@@ -33,4 +33,17 @@ router.get('/req_doc', wrapper.asyncMiddleware(async (req, res, next) => {
     res.download('.' + queryResult[i]['FILE'], queryResult[i]['FILE'].split('/')[-1]);
 }));
 
+// 의뢰 완료 리포트 다운로드 - R_NUM
+router.get('/report', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['REPORT'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    res.download('.' + queryResult[0]['REPORT'], queryResult[0]['REPORT'].split('/')[-1]);
+}));
+
 module.exports = router;

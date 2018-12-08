@@ -34,6 +34,27 @@
             });
         }
 
+        function apply(rNum) {
+            $.ajax({
+                type: 'post',
+                url: '/request/apply',
+                data: {
+                    rNum: rNum
+                },
+                success: function(data, status) {
+                    if (data.success) {
+                        alert('지원되었습니다');
+                    } else {
+                        alert('지원되지 않았습니다');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('지원되지 않았습니다');
+                }
+            });
+        }
+
     </script>
 </head>
 <body>

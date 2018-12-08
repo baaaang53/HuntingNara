@@ -38,36 +38,33 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
         attributes: ['C_ID','F_ID', 'TITLE', 'COST', 'S_DATE', 'E_DATE', 'CAREER'],
         values: [cId, "admin", title, cost, s_date, e_date, career]
     });
-    if (queryResult == 'success') {
-        queryResult = await db.getQueryResult(
-            'SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId +
-            '" ORDER BY R_NUM DESC LIMIT 1;');
-        const rNum = queryResult[0]['R_NUM'];
-        if (typeof language == 'object') {
-            for (let i = 0; i < language.length; i++) {
-                if (language[i]) {
-                    queryResult = await db.insert({
-                        into: 'REQ_ABILITY',
-                        attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-                        values: [rNum, language[i], competence[i]],
-                    });
-                }
-            }
-        } else {
-            queryResult = await db.insert({
-                into: 'REQ_ABILITY',
-                attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-                values: [rNum, language, competence],
-            });
-        }
-        if (queryResult == 'success') {
-            for (const document of documents) {
+    queryResult = await db.getQueryResult(
+        'SELECT R_NUM FROM REQUEST WHERE C_ID="' + cId + '" ORDER BY R_NUM DESC LIMIT 1;');
+    const rNum = queryResult[0]['R_NUM'];
+    if (typeof language == 'object') {
+        for (let i = 0; i < language.length; i++) {
+            if (language[i]) {
                 queryResult = await db.insert({
-                    into: 'REQ_DOC',
-                    attributes: ['R_NUM', 'FILE'],
-                    values: [rNum, '/public/upload/' + document.filename]
+                    into: 'REQ_ABILITY',
+                    attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
+                    values: [rNum, language[i], competence[i]],
                 });
             }
+        }
+    } else {
+        queryResult = await db.insert({
+            into: 'REQ_ABILITY',
+            attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
+            values: [rNum, language, competence],
+        });
+    }
+    if (queryResult == 'success') {
+        for (const document of documents) {
+            queryResult = await db.insert({
+                into: 'REQ_DOC',
+                attributes: ['R_NUM', 'FILE'],
+                values: [rNum, '/public/upload/' + document.filename]
+            });
         }
     }
     res.json({success: queryResult == 'success'})
@@ -203,7 +200,7 @@ router.get('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =>
 }));
 
 // 의뢰 지원하기
-router.post('/apply', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/apply/ask', wrapper.asyncMiddleware(async (req, res, next) => {
     const id = req.session.user_id;
     const rNum = req.body.rNum;
     let queryResult = await db.update({
@@ -215,19 +212,208 @@ router.post('/apply', wrapper.asyncMiddleware(async (req, res, next) => {
             R_NUM: rNum
         }
     });
-    if (queryResult == 'success') {
-        queryResult = await db.insert({
-            into: 'APPLIED_REQ',
-            attributes: ['R_NUM', 'F_ID'],
-            values: [rNum, id]
-        });
-    }
+    queryResult = await db.insert({
+        into: 'APPLIED_REQ',
+        attributes: ['R_NUM', 'F_ID'],
+        values: [rNum, id]
+    });
+    res.json({success: queryResult == 'success'});
+}));
+
+// 의뢰 수락하기
+router.post('/apply/accept', wrapper.asyncMiddleware(async (req, res, next) => {
+    const id = req.session.user_id;
+    const rNum = req.body.rNum;
+    const fId = req.body.fId;
+    let queryResult = await db.update({
+        table: 'REQUEST',
+        set: {
+            F_ID: fId,
+            STATE: 'working'
+        },
+        where: {
+            R_NUM: rNum
+        }
+    });
+    queryResult = await db.delete({
+        from: 'APPLIED_REQ',
+        where: {
+            R_NUM: rNum
+        }
+    });
     res.json({success: queryResult == 'success'});
 }));
 
 // 완료 요청 페이지
 router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
+}));
+
+// 완료 요청하기
+router.post('/complete/ask', upload.single('report'), wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    const report = req.file.filename;
+    const queryResult = await db.update({
+        table: 'REQUEST',
+        set: {
+            STATE: 'c_requesting',
+            REPORT: '/public/upload/' + report
+        },
+        where: {
+            R_NUM: rNum
+        }
+    })
+    res.json({success: queryResult == 'success'});
+}));
+
+// 완료 요청 수락하기
+router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    let queryResult = await db.update({
+        table: 'REQUEST',
+        set: {
+            STATE: 'complete'
+        },
+        where: {
+            R_NUM: rNum
+        }
+    });
+    queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['F_ID', 'TITLE'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    const id = req.session.user_id;
+    const fId = queryResult[0]['F_ID'];
+    const title = queryResult[0]['TITLE'];
+    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type="button" onclick="window.open(\'/complete/rate?rNum=' + rNum +'\')"';        // 상세정보 페이지 보여주면 좋을 듯
+    queryResult = await db.insert({
+        into: 'MESSAGE',
+        attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
+        values: [content, new Date(), id, fId]
+    })
+}));
+
+// 의뢰 완료 평점 입력 페이지
+router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/complete_rate.html'));
+}));
+
+// 의뢰 완료 평점 입력
+router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
+    const type = req.session.user_type;
+    const rNum = req.body.rNum;
+    const rate = req.body.rate;
+    if (type == 'freelancer') {
+        let queryResult = await db.update({
+            table: 'REQUEST',
+            set: {
+                C_RATE: rate
+            },
+            where: {
+                R_NUM: rNum
+            }
+        });
+        queryResult = await db.join({
+            select: ['REQUEST.C_ID', 'USER.REQ_COUNT', 'USER.RATE'],
+            from: 'REQUEST',
+            join: 'LEFT JOIN USER',
+            on: {
+                'REQUEST.C_ID': 'USER.ID'
+            },
+            where: {
+                'REQUEST.R_NUM': rNum
+            }
+        });
+        const cId = queryResult[0]['REQUEST.C_ID'];
+        const newReqCount = queryResult[0]['USER.REQ_COUNT'] + 1;
+        const newRate = (queryResult[0]['USER.RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        queryResult = await db.update({
+            table: 'USER',
+            set: {
+                REQ_COUNT: newReqCount,
+                RATE: newRate
+            },
+            where: {
+                ID: cId
+            }
+        });
+        res.json({success: queryResult == 'success'});
+    } else if (type == 'client') {
+        let queryResult = await db.update({
+            table: 'REQUEST',
+            set: {
+                F_RATE: rate
+            },
+            where: {
+                R_NUM: rNum
+            }
+        });
+        queryResult = await db.join({
+            select: ['REQUEST.F_ID', 'USER.REQ_COUNT', 'USER.RATE'],
+            from: 'REQUEST',
+            join: 'LEFT JOIN USER',
+            on: {
+                'REQUEST.F_ID': 'USER.ID'
+            },
+            where: {
+                'REQUEST.R_NUM': rNum
+            }
+        });
+        const fId = queryResult[0]['REQUEST.F_ID'];
+        const newReqCount = queryResult[0]['USER.REQ_COUNT'] + 1;
+        const newRate = (queryResult[0]['USER.RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        queryResult = await db.update({
+            table: 'USER',
+            set: {
+                REQ_COUNT: newReqCount,
+                RATE: newRate
+            },
+            where: {
+                ID: fId
+            }
+        });
+        res.json({success: queryResult == 'success'});
+    }
+}));
+
+// 의뢰 거절 사유 입력 페이지
+router.get('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '/public/html/complete_reject.html'));
+}));
+
+// 의뢰 거절
+router.post('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.body.rNum;
+    const reason = req.body.reason;
+    let queryResult = await db.update({
+        table: 'REQUEST',
+        set: {
+            STATE: 'rejected'
+        },
+        where: {
+            R_NUM: rNum
+        }
+    });
+    queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['F_ID', 'TITLE'],
+        where: {
+            R_NUM: rNum
+        }
+    });
+    const id = req.session.user_id;
+    const fId = queryResult[0]['F_ID'];
+    const title = queryResult[0]['TITLE'];
+    const content = '의뢰 완료 거절됨<br>의뢰제목: ' + title + '<br>거절사유: ' + reason;        // 상세정보 페이지 보여주면 좋을 듯
+    queryResult = await db.insert({
+        into: 'MESSAGE',
+        attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
+        values: [content, new Date(), id, fId]
+    });
+    res.json({success: queryResult == 'success'});
 }));
 
 
@@ -325,6 +511,12 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
 //     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
 // }));
 
+// 의뢰 상세보기 페이지
+router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail.html'));
+}));
+
+// 의뢰 상세보기
 router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
     const queryResult = await db.select({
