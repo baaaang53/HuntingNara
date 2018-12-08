@@ -17,7 +17,7 @@
             $('#request_table').find('tr:gt(0)').remove();
             $.ajax({
                 type: 'post',
-                url: '/request/list/admin',
+                url: '/request/list/whole',
                 data: {},
                 success: function(data) {
                     const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE', 'DETAIL'];
@@ -36,43 +36,6 @@
                 error: function(err) {
                     console.log(err);
                     alert('오류가 발생하였습니다');
-                }
-            });
-        }
-
-        // function getDetail(rNum) {
-        //     $.ajax({
-        //         type: 'post',
-        //         url: '/request/detail',
-        //         data: {rNum: rNum},
-        //         success: function(data, status) {
-        //             // 여기서 data 자리에 엘리먼트 집어넣으면 됨
-        //             // ex) $('div .modal-body').innerHMTL = '<a>예시</a>' 이런 식으로
-        //
-        //         },
-        //         error: function(err) {
-        //             console.log(err);
-        //         }
-        //     });
-        // }
-
-        function apply(rNum) {
-            $.ajax({
-                type: 'post',
-                url: '/request/apply',
-                data: {
-                    rNum: rNum
-                },
-                success: function(data, status) {
-                    if (data.success) {
-                        alert('지원되었습니다');
-                    } else {
-                        alert('지원되지 않았습니다');
-                    }
-                },
-                error: function(err) {
-                    console.log(err);
-                    alert('지원되지 않았습니다');
                 }
             });
         }
@@ -174,9 +137,6 @@
 </head>
 <body>
     <h1  style = "text-align: center;">의뢰 목록 보기</h1>
-    <div>
-        <button type="button" onclick="showAll();">의뢰조회</button><br>
-    </div>
     <div>
         <table id="request_table" style="width: 100%;">
             <tr>

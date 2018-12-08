@@ -304,17 +304,49 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     const id = req.session.user_id;
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
-    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\" onclick=\\"window.open(\'/complete/rate?rNum=' + rNum +'\')\\"';        // 상세정보 페이지 보여주면 좋을 듯
+    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\" onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button>';        // 상세정보 페이지 보여주면 좋을 듯
+    const d = new Date();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    const date = [year, month, day].join('-');
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
-        values: [content, new Date(), id, fId]
+        values: [content, date, id, fId]
     })
     res.json({success: queryResult == 'success'});
 }));
 
 // 의뢰 완료 평점 입력 페이지
 router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
+    if (req.session.user_type == 'client') {
+        let queryResult = await db.select({
+            from: 'REQUEST',
+            what: ['F_RATE'],
+            where: {
+                R_NUM: rNum
+            }
+        });
+        if (queryResult[0]['F_RATE']) {
+            res.end('이미 입력하셨습니다');
+            return;
+        }
+    } else if (req.seeion.user_type == 'freelancer') {
+        let queryResult = await db.select({
+            from: 'REQUEST',
+            what: ['C_RATE'],
+            where: {
+                R_NUM: rNum
+            }
+        });
+        if (queryResult[0]['C_RATE']) {
+            res.end('이미 입력하셨습니다');
+            return;
+        }
+    }
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_complete_rate.html'));
 }));
 
@@ -425,45 +457,23 @@ router.post('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) =
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
     const content = '의뢰 완료 거절됨<br>의뢰제목: ' + title + '<br>거절사유: ' + reason;        // 상세정보 페이지 보여주면 좋을 듯
+    const d = new Date();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    const date = [year, month, day].join('-');
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
-        values: [content, new Date(), id, fId]
+        values: [content,date, id, fId]
     });
     res.json({success: queryResult == 'success'});
 }));
 
-
-// 의뢰 상세보기
-/*router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
-    const queryObject = url.parse(req.url, true).query;
-    const rNum = queryObject['rNum'];
-    const queryResult1 = await db.select({
-        from: 'REQUEST',
-        what: ['*'],
-        where: {R_NUM: rNum}
-    });
-    const queryResult2 = await db.select({
-        from: 'REQ_DOC',
-        what: ['*'],
-        where: {R_NUM: rNum}
-    });
-    const queryResult3 = await db.select({
-        from: 'REQ_ABILITY',
-        what: ['*'],
-        where: {R_NUM: rNum}
-    });
-    const result = {
-        request: queryResult1,
-        reqDoc: queryResult2,
-        reqAbility: queryResult3
-    }
-    res.json(result);
-}));*/
-
-
 // 의뢰 목록 요청 _ 관리자 -> 전체 의뢰 목록, 거절된 의뢰 목록
-router.post('/list/admin', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/list/whole', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*']
@@ -492,25 +502,75 @@ router.post('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) =
 }));
 
 
-//모집중인 의뢰 보기
+// 모집중인 의뢰 보기
 router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where: { STATE :"registered"} //수정필요 _ 현재 로그인 정보
+        where: {
+            F_ID: 'admin'
+        }
     });
     res.json(queryResult);
 }));
 
-
 // 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력
-router.post('/list/freelancer/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
-    const queryResult = await db.select({
-        from: 'REQUEST',
-        what: ['*'],
-        where:{F_ID:"admin"} // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~조건을 어떻게 달아야 하는 건가요
+router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
+    const id = req.session.user_id;
+    let queryResult = await db.select({
+        from: 'USER',
+        what: ['CAREER'],
+        where: {
+            ID: id
+        }
     });
-    res.json(queryResult);
+    const career = queryResult[0]['CAREER'];
+    queryResult = await db.select({
+        from: 'F_ABILITY',
+        what: ['LANGUAGE', 'COMPETENCE'],
+        where: {
+            F_ID: id
+        }
+    });
+    const fAbility = {};
+    for (const data of queryResult) {
+        fAbility[data['LANGUAGE']] = data['COMPETENCE'];
+    }
+    queryResult = await db.getQueryResult('SELECT A.R_NUM, A.LANGUAGE, A.COMPETENCE FROM REQ_ABILITY AS A\ ' +
+        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ';');
+    const rNums = [];
+    let rNum = queryResult[0]['R_NUM'];
+    let flag = true;
+    for (let i=0; i<queryResult.length; i++) {
+        if (queryResult[i]['R_NUM'] == rNum) {
+            if (!fAbility[queryResult[i]['LANGUAGE']] || fAbility[queryResult[i]['LANGUAGE']] < queryResult[i]['COMPETENCE']) {
+                flag = false;
+            } else if (i == queryResult.length-1) {
+                if (flag) rNums.push(rNum);
+            }
+        } else {
+            if (flag) {
+                rNums.push(rNum);
+            } else {
+                flag = true;
+            }
+            rNum = queryResult[i]['R_NUM'];
+            i--;
+        }
+        console.log(i);
+    }
+    if (rNums.length != 0) {
+        let sql = 'SELECT * FROM REQUEST WHERE ';
+        for (const r of rNums) {
+            sql += 'R_NUM = ' + r + ' OR ';
+        }
+        sql = sql.slice(0, -4) + ';';
+        queryResult = await db.getQueryResult(sql);
+        res.json(queryResult);
+        return;
+    } else {
+        res.json([]);
+    }
 }));
 
 
@@ -524,20 +584,7 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(queryResult);
 }));
 
-// // 의뢰 상세보기
-// router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
-//     const queryObject = url.parse(req.url, true).query;
-//     const rNum = queryObject['rNum'];
-//     const queryResult = await db.select({
-//         from: 'REQUEST',
-//         what: ['*'],
-//         where: {R_NUM: rNum}
-//     });
-//     // res.json(queryResult[0]);
-//     res.type('html').sendFile(path.join(__dirname, '../public/html/request_askcomplete.html'));
-// }));
-
-// 의뢰 상세보기 페이지 _ 관리자
+// 의뢰 상세보기 페이지
 router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     res.type('html').sendFile(path.join(__dirname, '../public/html/request_detail.html'));
 }));
@@ -579,8 +626,6 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     result['COUNT(FILE)'] = queryResult[0]['COUNT(FILE)'];
     res.json(result);
 }));
-
-
 
 // 의뢰 지원자 리스트 페이지
 router.get('/applier/list', wrapper.asyncMiddleware(async (req, res, next) => {

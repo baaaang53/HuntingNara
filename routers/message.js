@@ -10,8 +10,6 @@ router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
 }));
 
 router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
-    console.log(req.session.user_id);
-    console.log(req.session.user_type);
     const id = req.session.user_id;
     const queryResult = await db.join({
         select: ['MESSAGE.M_NUM', 'MESSAGE.CONTENT', 'MESSAGE.DATETIME', 'MESSAGE.STATE', 'USER.NAME'],

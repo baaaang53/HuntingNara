@@ -29,7 +29,7 @@
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        if (row['F_ID'] == 'admin') {
+                        if (row['STATE'] == 'working' || row['STATE'] == 'rejected') {
                             newTr += '<td><button type="button" onclick="window.open(\'/request/complete/ask?rNum=' + row['R_NUM'] + '\')">완료요청</button></td>'
                         }
                         newTr += '</tr>';
@@ -142,9 +142,6 @@
 </head>
 <body>
 <h1  style = "text-align: center;">내 의뢰 보기</h1>
-<div>
-    <button type="button" onclick="show_freelancer();">내의뢰보기</button>
-</div>
 <div>
     <table id="request_table" style="width: 100%;">
         <tr>
