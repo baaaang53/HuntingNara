@@ -43,6 +43,29 @@
             });
         }
 
+        function deleterequest(rnum, state){
+            if(state != 'registered' && state != 'applying'){
+                alert("진행중인 의뢰는 삭제할 수 없습니다")
+                return false;
+            }
+            else{
+                if(confirm("정말로 삭제하시겠습니까?")){
+                    const rNum = rnum;
+                    $.ajax({
+                        type : 'post',
+                        url : './delete_user',
+                        data : { user_id : rNum}
+                    })
+                    window.location.reload();
+                }
+                else{
+                    return false;
+                }
+            }
+
+        }
+
+
         function sortcost() {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("request_table");
