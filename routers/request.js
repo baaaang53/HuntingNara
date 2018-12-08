@@ -184,8 +184,7 @@ router.post('/modify', upload.array('document'), wrapper.asyncMiddleware(async (
 
 // 의뢰 목록 페이지 _관리자
 router.get('/list', wrapper.asyncMiddleware(async (req, res, next) => {
-    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list.html'));
-}));
+    res.type('html').sendFile(path.join(__dirname, '../public/html/request_list.html'))}));
 
 // 의뢰 목록 페이지 _ 프리랜서
 router.get('/list/freelancer', wrapper.asyncMiddleware(async (req, res, next) => {
@@ -259,11 +258,20 @@ router.get('/askcomplete', wrapper.asyncMiddleware(async (req, res, next) => {
 }));*/
 
 
-// 의뢰 목록 요청 _ 관리자
+// 의뢰 목록 요청 _ 관리자 -> 전체 의뢰 목록, 거절된 의뢰 목록
 router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*']
+    });
+    res.json(queryResult);
+}));
+
+router.post('/list/rejected', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryResult = await db.select({
+        from: 'REQUEST',
+        what: ['*'],
+        where: {STATE : "rejected"}
     });
     res.json(queryResult);
 }));

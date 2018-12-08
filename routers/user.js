@@ -341,14 +341,30 @@ router.get('/list', wrapper.asyncMiddleware(async (req, res, next)=> {
     res.type('html').sendFile(path.join(__dirname, '../public/html/user_list.html'));
 }));
 
-// 사용자 목록 요청
-router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
+// 사용자 목록 요청 - 전체보기, 프리랜서 보기, 의뢰인 보기
+router.post('/list_all', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'USER',
         what: ['*']
     });
     res.json(queryResult);
 }));
+router.post('/list_free', wrapper.asyncMiddleware(async(req,res,next) => {
+    const queryResult = await db.select({
+        from:'USER',
+        what: ['*'],
+        where: {TYPE : 'freelancer'}
+    })
+    res.json(queryResult)
+}))
+router.post('/list_client', wrapper.asyncMiddleware(async(req,res,next) =>{
+    const queryResult = await db.select({
+        from:'USER',
+        what: ['*'],
+        where: {TYPE : 'client'}
+    })
+    res.json(queryResult)
+}))
 
 // 이건 왜 여기있지??
 router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {

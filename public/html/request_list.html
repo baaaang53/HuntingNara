@@ -36,6 +36,32 @@
             });
         }
 
+        function show_rejected() {
+            $('#request_table').find('tr:gt(0)').remove();
+            $.ajax({
+                type: 'post',
+                url: '/request/list/rejected',
+                data: {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE'];
+                    for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        let newTr = '<tr onclick="getDetail(' + row['R_NUM'] + ')">';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+
         function getDetail(rNum) {
             $.ajax({
                 type: 'post',
@@ -173,7 +199,8 @@
 <body>
     <h1  style = "text-align: center;">의뢰 목록 보기</h1>
     <div>
-        <button type="button" onclick="showAll();">의뢰조회</button><br>
+        <button type="button" onclick="showAll();">전체 의뢰 조회</button>
+        <button type="buttom" onclick="show_rejected()">거절된 의뢰 조회</button><br>
     </div>
     <div>
         <table id="request_table" style="width: 100%;">
