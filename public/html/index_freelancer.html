@@ -9,7 +9,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            type: 'post',
+            url: '/message/count',
+            data: {},
+            success: function(data, status) {
+                if (data > 0) {
+                    alert('새 메세지가 도착하였습니다');
+                }
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+    });
+    </script>
 
 </head>
 <body  style = "text-align: center;">

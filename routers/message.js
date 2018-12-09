@@ -25,15 +25,17 @@ router.post('/list', wrapper.asyncMiddleware(async (req, res, next) => {
     res.json(queryResult);
 }));
 
-router.post('/send', wrapper.asyncMiddleware(async (req, res, next) => {
+router.post('/count', wrapper.asyncMiddleware(async (req, res, next) => {
     const id = req.session.user_id;
-    const rId = req.body.rId;
-    const content = req.body.content;
-    const queryResult = await db.insert({
-        into: 'MESSAGE',
-        attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
-        values: [content, new Date().valueOf(), id, rId]
+    const queryResult = await db.select({
+        from: 'MESSAGE',
+        what: ['COUNT(*)'],
+        where: {
+            'R_ID': id,
+            'STATE': 'unread'
+        }
     });
+    res.json(queryResult[0]['COUNT(*)']);
 }));
 
 router.post('/read', wrapper.asyncMiddleware(async (req, res, next) => {
