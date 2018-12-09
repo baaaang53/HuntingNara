@@ -29,9 +29,9 @@
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        if (row['F_ID'] == 'admin') {
-                            newTr += '<td><button type="button" onclick="apply(' + row['R_NUM'] + ')">지원하기</button></td>';
-                        }
+                        // if (row['F_ID'] == 'admin') {
+                        //     newTr += '<td><button type="button" onclick="apply(' + row['R_NUM'] + ')">지원하기</button></td>';
+                        // }
                         newTr += '</tr>';
                         $('#request_table tr:last').after(newTr);
                     }
