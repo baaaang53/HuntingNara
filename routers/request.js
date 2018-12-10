@@ -334,7 +334,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
             }
         });
         if (queryResult[0]['F_RATE']) {
-            res.end('이미 입력하셨습니다');
+            res.redirect('/');
             return;
         }
     } else if (req.seeion.user_type == 'freelancer') {
@@ -346,7 +346,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
             }
         });
         if (queryResult[0]['C_RATE']) {
-            res.end('이미 입력하셨습니다');
+            res.redirect('/');
             return;
         }
     }
