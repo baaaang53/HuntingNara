@@ -121,6 +121,17 @@ router.get('/logout', wrapper.asyncMiddleware(async (req, res, next) => {
     delete req.session.user_type;
     res.redirect('/');
 }));
+//로그인한 사람의 이름
+router.post('/getName', wrapper.asyncMiddleware(async(req,res, next) => {
+    const id = req.session.user_id;
+    const queryResult = await db.select({
+        from : 'USER',
+        what : ['NAME'],
+        where : {ID : id}
+    })
+    res.json(queryResult);
+}))
+
 
 // 회원정보 수정 - 프리랜서, 의뢰자
 router.get('/modify', wrapper.asyncMiddleware(async (req,res, next) => {

@@ -8,12 +8,107 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        .king{
+            margin-top : 20px;
+            width : 100%;
+            height: 110px;
+        }
+        .boss {
+            background-color : white;
+            border : solid 1px;
+            border-radius: 8px;
+            width : 200px;
+            height : 110px;
+            vertical-align: middle;
+            margin-left : 20px;
+            margin-right : 20px;
+        }
+        .left {
+            float:left;
+        }
+        .right {
+            float:right;
+        }
+        .bigchild {
+            width : 200px;
+            height : 40px;
+            //border : 1px solid blue;
+            //padding : 0px;
+            margin-bottom : 4px;
+            margin-top : 6px;
+            text-align: center;
+        }
+        .child {
+            display : inline-block;
+            width : 80px;
+            height : 40px;
+            vertical-align: middle;
+            margin : 7px;
+            border: solid 1px #e7e7e7;
+            border-radius: 8px;
+            background-color : white;
+            font-size : 11px;
+        }
+        .child:hover {
+            background-color : #e7e7e7;
+        }
+
+        .selecting {
+            background-color :white;
+            color : dimgrey;
+        }
+
+        .styletable {
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 20px ;
+            margin-left : 10%;
+        }
+        table.styletable th{
+            width: 155px;
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: top;
+            color: #fff;
+            background: #404040 ;
+            text-align: center;
+        }
+       table.styletable td {
+            width: 155px;
+            padding: 10px;
+            vertical-align: top;
+            border-bottom: 1px solid #ccc;
+            background: #eee;
+        }
+    </style>
 
     <script type="text/javascript">
-
+        //import logo from './logo.png';
+        $(document).ready(function(){
+            showAll();
+            $.ajax({
+                type : 'post',
+                url : '/user/getName',
+                data:{},
+                success: function(data){
+                    const name = data[0]["NAME"];
+                    console.log(name);
+                    document.getElementById('showname').innerHTML = "<p>반가워요! <br>" + name + "님</p>";
+                },
+                error : function(err){
+                    console.log(err);
+                    alert("사용자 이름을 불러올 수 없습니다.")
+                }
+            })
+        })
 
         function showAll() {
             $('#user_table').find('tr:gt(0)').remove();
+            $("#showall").css({'color':'black', 'border-bottom':'solid 2px black'});
+            $("#showfree").css({'color':'dimgrey', 'border-bottom':'0px'});
+            $("#showclient").css({'color':'dimgrey', 'border-bottom':'0px'});
             $.ajax({
                 type: 'post',
                 url: '/user/list_all',
@@ -39,12 +134,15 @@
         }
         function showFreelancer() {
             $('#user_table').find('tr:gt(0)').remove();
+            $("#showfree").css({'color':'black', 'border-bottom':'solid 2px black'});
+            $("#showall").css({'color':'dimgrey', 'border-bottom':'0px'});
+            $("#showclient").css({'color':'dimgrey', 'border-bottom':'0px'});
             $.ajax({
                 type: 'post',
                 url: '/user/list_free',
                 data: {},
                 success: function(data) {
-                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR'];
+                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', 'MODIFY', 'DELETE'];
                     for (const row of data) {
                         row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
                         row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\',\''+row['STATE']+'\')">삭제</button>';
@@ -64,12 +162,15 @@
         }
         function showClient() {
             $('#user_table').find('tr:gt(0)').remove();
+            $("#showclient").css({'color':'black', 'border-bottom':'solid 2px black'});
+            $("#showfree").css({'color':'dimgrey', 'border-bottom':'0px'});
+            $("#showall").css({'color':'dimgrey', 'border-bottom':'0px'});
             $.ajax({
                 type: 'post',
                 url: '/user/list_client',
                 data: {},
                 success: function(data) {
-                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', ''];
+                    const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', 'MODIFY', 'DELETE'];
                     for (const row of data) {
                         row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
                         row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\')">삭제</button>';
@@ -87,7 +188,6 @@
                 }
             });
         }
-
         function delete_user(id) {
             $.ajax({
                 type: "post",
@@ -118,23 +218,33 @@
             }
         }
 
-
-
-
     </script>
 
 </head>
 <body>
-    <h1 style = "text-align: center;">사용자 목록 보기</h1>
-    <div>
-        <button type="button" onclick="showAll();">전체보기</button>
-        <button type="button" onclick="showFreelancer();">프리랜서보기</button>
-        <button type="button" onclick="showClient();">의뢰인보기</button>
+<div class="king w3-bar">
+    <div class="boss left"><img id="logo" src="http://blog.naver.com/storyphoto/viewer.jsp?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAxODEyMTBfMjIg%2FMDAxNTQ0MzgxOTMzNjY4.OKdZsMXGaew7YB2sO6gTEivtcpvjSLqhe56K_00IgCsg.i4vcuOr54wxONQLOtmihmNhpWhgfvQKVSWWZ_djyLSwg.PNG.rkdtnqls1113%2Flogo.png"></div>
+    <div class="boss right">
+        <div id="showname" class="bigchild"></div>
+        <div class="w3-bar">
+            <button class = " child"> 내 정보 수정</button>
+            <a href="http://localhost:3000/user/logout"><button class = "w3-button child"> 로그아웃</button></a>
+        </div>
     </div>
-    <div>
-        <table id="user_table" style="width: 100%;">
-            <tr>
+</div>
 
+    <h1 style="margin-left: 10%;margin-bottom:0;">User List</h1>
+    <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 5px; margin-bottom: 5px">
+    <div class="w3-bar" style="width:80%; margin-left:10%; margin-bottom:0;">
+        <button id="showall" class="w3-bar-item selecting" type="button" onclick="showAll();">전체보기</button>
+        <button id="showfree" class="w3-bar-item selecting" type="button" onclick="showFreelancer();">프리랜서보기</button>
+        <button id="showclient" class="w3-bar-item selecting" type="button" onclick="showClient();">의뢰인보기</button>
+    </div>
+    <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 0px; margin-bottom: 5px">
+
+<div class="w3-container" style ="width:90%; text-align:center; padding:0;">
+        <table class="styletable" id="user_table" style = "padding : 0;">
+            <tr>
                 <th>ID</th>
                 <th>유형</th>
                 <th>이름</th>

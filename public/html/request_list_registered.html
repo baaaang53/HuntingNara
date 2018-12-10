@@ -20,7 +20,7 @@
                 url: '/request/list/registered',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER',' STATE', 'DETAIL'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER','STATE', 'DETAIL'];
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
