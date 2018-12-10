@@ -6,16 +6,62 @@
 
     <!-- bootstrap including jquery -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        .form_title_box{
+            height : 100px;
+            background-color : #3b3838;
+            color:white;
+            text-align : center;
+            padding-top: 20px;
+        }
+        .form_text {
+            color: #3b3838;
+            font-weight : bold;
+            display : inline-block;
+            margin-left : 10%;
+            margin-right : 10px;
+        }
+        .form_input{
+            display : inline-block;
+            border : solid 1px #C9C9C9;
+            background-color : #F5F5F5;
+            width : 80%;
+            margin-left : 10%;
+        }
+        .small{
+            width: 25%;
+            display: inline-block;
+            margin-left : 0%;
+        }
+        .form_file{
+            display: inline-block;
+            width: 50%;
+            margin-left: 10%;
+
+        }
+        .plus_button{
+            display: inline-block;
+            margin-left : 5px;
+        }
+        .submit_button{
+            margin-left:40%; width: 20%; height: 50px; background-color: #3b3838; color:white; border:none
+        }
+
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+
     <script type="text/javascript">
         function addLanguage() {
-            $('fieldset.language_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
+            $('fieldset.language_form').append('<p class="form_text">언어</p><input class="w3-input form_input small" type="text" name="language">\n' +
+                '                    <p class="form_text" style="margin-left:3%">능숙도</p><input class="w3-input form_input small" type="number" name="competence" min="0" max="5">\n' +
+                '                    <br><br>');
         }
 
         function addDocument() {
-            $('fieldset.document_form').append('<input type="file" name="document"><br><br>');
+            $('fieldset.document_form').append('<input class="form_file" type="file" name="document"><br>');
         }
 
         function submitForm() {
@@ -53,35 +99,45 @@
     </script>
 </head>
 <body>
+<div class="w3-card-4" style="width:80%; margin-left:10%; margin-top: 15px;">
+    <div class="w3-container form_title_box">
+        <h2>Register Request</h2>
+    </div>
+    <br>
     <div class ="req_register_form">
-        <h1 style = "text-align: center;">&emsp;&emsp;의뢰등록</h1><br><br>
         <form id="req_reg">
-            &emsp;의뢰제목:
-            <input type="text" name="title" required><br><br>
-            &emsp;의뢰비용:
-            <input type="number" name="cost" min="0" required> 원<br><br>
-            &emsp;시작날짜:
-            <input type="date" name="s_date" value="2018-12-13" required><br><br>
-            &emsp;마감날짜:
-            <input type="date" name="e_date" value="2018-12-13" required><br><br>
-            &emsp;<strong>요구사항</strong><br>
-            &emsp;필요경력:
-            <input type="number" name="career" min="0" required>년<br><br>
-            <fieldset class="language_form" form="req_reg">
-                &emsp;필요언어/능숙도:<br>
-                &emsp;언어:
-                <input type="text" name="language">
-                능숙도(0~5):
-                <input type="number" name="competence" min="0" max="5">
-                <button type="button" onclick="addLanguage();">+</button><br><br>
+            <p class="form_text">의뢰제목</p>
+            <input class="w3-input form_input" type="text" name="title" required><br><br>
+            <p class="form_text">의뢰비용</p>
+            <input class="w3-input form_input" style="width: 80%"type="number" name="cost" min="0" required><p class="form_text" style="margin:0">&emsp;원</p><br><br>
+            <p class="form_text">시작날짜</p>
+            <input class="w3-input form_input" type="date" name="s_date" value="2018-12-13" required><br><br>
+            <p class="form_text">마감날짜</p>
+            <input class="w3-input form_input" type="date" name="e_date" value="2018-12-13" required><br><br>
+            <p class="form_text">[요구사항]</p><br>
+            <fieldset class="w3-bar" style="border:none">
+                <p class="form_text">1) 필요경력</p>
+                <input class="w3-input form_input small" type="number" name="career" min="0" required>
+                <p class="form_text" style="margin:0">&emsp;년</p><br><br>
             </fieldset>
-            <fieldset class="document_form" form="req_reg">
-                &emsp;의뢰문서:
-                <input type="file" name="document">
-                <button type="button" onclick="addDocument();">+</button><br><br>
+            <fieldset style="border:none" class="language_form" form="req_reg">
+                <p class="form_text">2) 필요언어/능숙도</p>
+                <button type="button" class="plus_button"onclick="addLanguage();">+</button>
+                <div class="w3-bar">
+                    <p class="form_text">언어</p><input class="w3-input form_input small" type="text" name="language">
+                    <p class="form_text" style="margin-left:3%">능숙도</p><input class="w3-input form_input small" type="number" name="competence" min="0" max="5"><br><br>
+                </div>
             </fieldset>
-            <button type="button" onclick="submitForm();">등록하기</button>
+            <fieldset style="border:none" class="document_form" form="req_reg">
+                <div class="w3-bar">
+                    <p class="form_text">3) 의뢰문서</p>
+                    <button type="button" style = "display:inline-block"  onclick="addDocument();">+</button>
+                </div>
+                <input type="file" class="form_file" name="document"><br>
+            </fieldset>
+            <button class="submit_button" type="button" onclick="submitForm();">등록하기</button>
         </form>
     </div>
+</div>
 </body>
 </html>

@@ -6,19 +6,92 @@
 
     <!-- bootstrap including jquery -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        .king{
+            margin-top : 20px;
+            width : 100%;
+            height: 110px;
+        }
+        .boss {
+            background-color : white;
+            border : solid 1px;
+            border-radius: 8px;
+            width : 200px;
+            height : 110px;
+            vertical-align: middle;
+            margin-left : 20px;
+            margin-right : 20px;
+        }
+        .left {
+            float:left;
+        }
+        .right {
+            float:right;
+        }
+        .bigchild {
+            width : 200px;
+            height : 40px;
+            margin-bottom : 4px;
+            margin-top : 6px;
+            text-align: center;
+        }
+        .child {
+            display : inline-block;
+            width : 80px;
+            height : 40px;
+            vertical-align: middle;
+            margin : 7px;
+            border: solid 1px #e7e7e7;
+            border-radius: 8px;
+            background-color : white;
+            font-size : 11px;
+        }
+        .child:hover {
+            background-color : #e7e7e7;
+        }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type : 'post',
+                url : '/user/getName',
+                data:{},
+                success: function(data){
+                    const name = data[0]["NAME"];
+                    console.log(name);
+                    document.getElementById('showname').innerHTML = "<p>반가워요! <br>" + name + "님</p>";
+                },
+                error : function(err){
+                    console.log(err);
+                    alert("사용자 이름을 불러올 수 없습니다.")
+                }
+            })
+        })
+    </script>
 </head>
 <body>
-
-<h1 style = "text-align: center;">의뢰자 페이지</h1>
-
-<a href="http://localhost:3000/request/register"><button>새 의뢰 등록</button></a><br>
-<a href="http://localhost:3000/request/list/client"><button>내 의뢰 보기</button></a><br>
-<a href="http://localhost:3000/user/modify"><button>내 정보 수정하기</button></a><br>
-<a href="http://localhost:3000/message/list"><button class="btn btn-primary">메세지함 보기</button></a><br><br>
-&emsp;&emsp;<a href="http://localhost:3000/user/logout"><button type="button" class="btn btn-primary">로그아웃</button></a><br>
+<div class="king w3-bar">
+    <div class="boss left"><img id="logo" src="http://blog.naver.com/storyphoto/viewer.jsp?src=https%3A%2F%2Fblogfiles.pstatic.net%2FMjAxODEyMTBfMjIg%2FMDAxNTQ0MzgxOTMzNjY4.OKdZsMXGaew7YB2sO6gTEivtcpvjSLqhe56K_00IgCsg.i4vcuOr54wxONQLOtmihmNhpWhgfvQKVSWWZ_djyLSwg.PNG.rkdtnqls1113%2Flogo.png"></div>
+    <div class="boss right">
+        <div id="showname" class="bigchild"></div>
+        <div class="w3-bar">
+            <button class = " child"> 내 정보 수정</button>
+            <a href="http://localhost:3000/user/logout"><button class = "w3-button child"> 로그아웃</button></a>
+        </div>
+    </div>
+</div>
+<h1 style = "text-align: center;">의뢰자 페이지</h1><br><br>
+<div class="w3-container w3-center">
+    <a href="http://localhost:3000/request/register"><button class="w3-button w3-black">새 의뢰 등록</button></a>
+    <a href="http://localhost:3000/request/list/client"><button class="w3-button w3-black">내 의뢰 보기</button></a>
+    <a href="http://localhost:3000/user/modify"><button class="w3-button w3-black">내 정보 수정하기</button></a>
+    <a href="http://localhost:3000/message/list"><button class="w3-button w3-black">메세지함 보기</button></a>
+    <a href="http://localhost:3000/user/logout"><button type="button" class="w3-button w3-black">로그아웃</button></a>
+</div>
 
 </body>
 </html>
