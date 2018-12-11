@@ -7,6 +7,7 @@ const db = require('../modules/db');
 const url = require('url');
 const multer = require('multer');
 
+// 파일 업로드 모듈
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './public/upload');
@@ -16,6 +17,17 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
+
+// datetime -> date
+function getDate() {
+    const date = new Date();
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    let year = date.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+}
 
 // 의뢰등록 - 의뢰 정보 입력 페이지
 router.get('/register', (req, res, next) => {
@@ -243,7 +255,8 @@ router.post('/apply/accept', wrapper.asyncMiddleware(async (req, res, next) => {
         table: 'REQUEST',
         set: {
             F_ID: fId,
-            STATE: 'working'
+            STATE: 'working',
+            S_WORKING: getDate()
         },
         where: {
             R_NUM: rNum
@@ -291,7 +304,8 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     let queryResult = await db.update({
         table: 'REQUEST',
         set: {
-            STATE: 'complete'
+            STATE: 'complete',
+            E_WORKING: date
         },
         where: {
             R_NUM: rNum
@@ -308,17 +322,10 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
     const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\" onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button>';        // 상세정보 페이지 보여주면 좋을 듯
-    const d = new Date();
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
-    let year = d.getFullYear();
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-    const date = [year, month, day].join('-');
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
-        values: [content, date, id, fId]
+        values: [content, getDate(), id, fId]
     })
     res.json({success: queryResult == 'success'});
 }));
@@ -460,17 +467,10 @@ router.post('/complete/reject', wrapper.asyncMiddleware(async (req, res, next) =
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
     const content = '의뢰 완료 거절됨<br>의뢰제목: ' + title + '<br>거절사유: ' + reason;        // 상세정보 페이지 보여주면 좋을 듯
-    const d = new Date();
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
-    let year = d.getFullYear();
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-    const date = [year, month, day].join('-');
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
-        values: [content,date, id, fId]
+        values: [content, getDate(), id, fId]
     });
     res.json({success: queryResult == 'success'});
 }));
