@@ -91,7 +91,7 @@
                         $('#language tr:last').after('<tr><td>' + data.LANGUAGE[i] + '</td><td>' + data.COMPETENCE[i] + '</td></tr>');
                     }
                     $('#inner_portfolio').find('tr:gt(0)').remove();
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'RATE'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'F_RATE'];
                     for (let i=0; i<data.INNER_PORTFOLIO.length; i++) {
                         data.INNER_PORTFOLIO[i]['S_DATE'] = new Date(data.INNER_PORTFOLIO[i]['S_DATE']).toLocaleDateString('ko-KR');
                         data.INNER_PORTFOLIO[i]['E_DATE'] = new Date(data.INNER_PORTFOLIO[i]['E_DATE']).toLocaleDateString('ko-KR');

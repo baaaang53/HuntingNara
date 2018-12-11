@@ -305,7 +305,7 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
         table: 'REQUEST',
         set: {
             STATE: 'complete',
-            E_WORKING: date
+            E_WORKING: getDate()
         },
         where: {
             R_NUM: rNum
@@ -332,6 +332,7 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
 
 // 의뢰 완료 평점 입력 페이지
 router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.query.rNum;
     if (req.session.user_type == 'client') {
         let queryResult = await db.select({
             from: 'REQUEST',
@@ -344,7 +345,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
             res.redirect('/');
             return;
         }
-    } else if (req.seeion.user_type == 'freelancer') {
+    } else if (req.session.user_type == 'freelancer') {
         let queryResult = await db.select({
             from: 'REQUEST',
             what: ['C_RATE'],
@@ -364,7 +365,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
 router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
     const type = req.session.user_type;
     const rNum = req.body.rNum;
-    const rate = req.body.rate;
+    const rate = Number(req.body.rate);
     if (type == 'freelancer') {
         let queryResult = await db.update({
             table: 'REQUEST',
@@ -387,8 +388,8 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
             }
         });
         const cId = queryResult[0]['C_ID'];
-        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const newReqCount = Number(queryResult[0]['REQ_COUNT']) + 1;
+        const newRate = (Number(queryResult[0]['RATE']) * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
@@ -422,8 +423,8 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
             }
         });
         const fId = queryResult[0]['F_ID'];
-        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const newReqCount = Number(queryResult[0]['REQ_COUNT']) + 1;
+        const newRate = (Number(queryResult[0]['RATE']) * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
