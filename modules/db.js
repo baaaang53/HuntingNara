@@ -44,7 +44,11 @@ exports.select = (option) => {
     if (option.where) {
         sql = sql.slice(0, -2) + ' FROM ' + option.from + ' WHERE ';
         for (const key in option.where) {
-            sql += key + '="' + option.where[key] + '" AND ';
+            if (typeof option.where[key] == 'number') {
+                sql += key + '=' + option.where[key] + ' AND ';
+            } else {
+                sql += key + '="' + option.where[key] + '" AND ';
+            }
         }
         sql = sql.slice(0, -5) + ';';
     } else {
@@ -86,7 +90,11 @@ exports.insert = (option) => {
         sql = sql.slice(0, -2) + ') VALUES (';
     }
     for (const value of option.values) {
-        sql += '"' + value + '", ';
+        if (typeof value == 'number') {
+            sql += value + ', ';
+        } else {
+            sql += '"' + value + '", ';
+        }
     }
     sql = sql.slice(0, -2) + ');';
     console.log('==================== Query ==========================');
@@ -116,7 +124,11 @@ exports.insert = (option) => {
 exports.delete = (option) => {
     let sql = 'DELETE FROM ' + option.from + ' WHERE ';
     for (const w in option.where) {
-        sql += w + ' = "' + option.where[w] + '" AND ';
+        if (typeof option.where[w] == 'number') {
+            sql += w + '=' + option.where[w] + ' AND ';
+        } else {
+            sql += w + '="' + option.where[w] + '" AND ';
+        }
     };
     sql = sql.slice(0, -5) + ';';
     console.log('==================== Query ==========================');
@@ -147,11 +159,19 @@ exports.delete = (option) => {
 exports.update = (option) => {
     let sql = 'UPDATE ' + option.table + ' SET ';
     for (const s in option.set) {
-        sql +=  s + ' = "' + option.set[s] + '", ';
+        if (typeof option.set[s] == 'number') {
+            sql += s + '=' + option.set[s] + ', ';
+        } else {
+            sql += s + '="' + option.set[s] + '", ';
+        }
     }
     sql = sql.slice(0, -2) + ' WHERE ';
     for (const w in option.where) {
-        sql += w + ' = "' + option.where[w] + '" AND ';
+        if (typeof option.where[w] == 'number') {
+            sql += w + '=' + option.wher[w] + ' AND ';
+        } else {
+            sql += w + '="' + option.where[w] + '" AND ';
+        }
     };
     sql = sql.slice(0, -5) + ';';
     console.log('==================== Query ==========================');
@@ -192,13 +212,17 @@ exports.join = (option) => {
     }
     sql = sql.slice(0, -2) + ' FROM ' + option.from + ' ' + option.join + ' ON ';
     for (const o in option.on) {
-        sql += o + ' = ' + option.on[o] + ' AND ';
+        sql += o + '=' + option.on[o] + ' AND ';
     }
     sql = sql.slice(0, -5);
     if (option.where) {
         sql += ' WHERE '
         for (const w in option.where) {
-            sql += w + ' = "' + option.where[w] + '" AND ';
+            if (typeof option.where[w] == 'number') {
+                sql += w + '=' + option.where[w] + ' AND ';
+            } else {
+                sql += w + '="' + option.where[w] + '" AND ';
+            }
         }
         sql = sql.slice(0, -5) + ';';
     } else {

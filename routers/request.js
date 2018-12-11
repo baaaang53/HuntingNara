@@ -516,7 +516,7 @@ router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =
     res.json(queryResult);
 }));
 
-// 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력
+// 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력, S_DATE, E_DATE
 router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const id = req.session.user_id;
     let queryResult = await db.select({
@@ -538,8 +538,9 @@ router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     for (const data of queryResult) {
         fAbility[data['LANGUAGE']] = data['COMPETENCE'];
     }
+    const today = getDate();
     queryResult = await db.getQueryResult('SELECT A.R_NUM, A.LANGUAGE, A.COMPETENCE FROM REQ_ABILITY AS A\ ' +
-        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ';');
+        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ' AND date(now()) >= date(R.S_DATE) AND date(now()) <= date(R.E_DATE);');
     const rNums = [];
     let rNum = queryResult[0]['R_NUM'];
     let flag = true;
