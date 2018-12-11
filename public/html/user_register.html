@@ -151,6 +151,10 @@
                             }
                         }
                     }
+                    if(($('#freelancer')[0].checked) && (input.name === "competence") && ((input.value<0)|| input.value>5)){
+                        alert("입력한 능숙도의 범위를 확인해주세요");
+                        return false;
+                    }
                     formData.append(input.name, input.value);
                 }
                 if ($('#freelancer')[0].checked) {

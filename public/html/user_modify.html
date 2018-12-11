@@ -97,15 +97,46 @@
         });
 
         function addLanguage() {
-            $('fieldset.additional_form').append('&emsp;언어: <input type="text" name="language"> 능숙도(0~5): <input type="number" name="competence" min="0" max="5"><br><br>');
-        }
+            $('fieldset.additional_form').append('<p class="form_text">언어</p><input class="w3-input form_input small" id="language" type="text" name="language">');
+            $('fieldset.additional_form').append('<p class="form_text" style="margin-left:3%">능숙도(0-5)</p><input class="w3-input form_input small" type="number" id="competence" name="competence" min="0" max="5"><br><br>'); }
 
         function submitForm() {
+            var radioflag = false;
             const formData = new FormData();
             for (const input of $('#register input').not($('#register input[type="file"]'))) {
+                if(input.value === ""){
+                    switch(input.name){
+                        case("phone"):
+                            alert("입력된 전화번호가 없습니다");
+                            return false;
+                        case("age"):
+                            alert("입력된 나이가 없습니다");
+                            return false;
+                        case("career"):
+                            alert("입력된 경력이 없습니다");
+                            return false;
+                        case("major"):
+                            alert("입력된 전공학과가 없습니다");
+                            return false;
+                        case("language"):
+                            alert("최소 하나 이상의 능숙한 언어를 입력해주세요");
+                            return false;
+                        case("competence"):
+                            alert("입력한 언어의 능숙도를 입력해주세요");
+                            return false;
+                    }
+                }
+                if(input.name ==="competence" && ((input.value<0)||input.value>5)){
+                    alert("입력한 능숙도의 범위를 확인해주세요");
+                    return false;
+                }
                 formData.append(input.name, input.value);
             }
             for (const input of $('#register input[type="file"]')) {
+                if (input.files.length === 0) {
+                    alert("포트폴리오를 업로드 해주세요")
+                    return false;
+                }
                 formData.append(input.name, input.files[0]);
             }
             $.ajax({
