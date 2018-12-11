@@ -6,6 +6,59 @@
 
     <!-- bootstrap including jquery -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .form_title_box{
+            height : 100px;
+            background-color : #3b3838;
+            color:white;
+            text-align : center;
+            padding-top: 20px;
+        }
+        .form_text {
+            color: #3b3838;
+            font-weight : bold;
+            display : inline-block;
+            margin : 10px 0px 10px 10%;
+        }
+        .form_input{
+            display : inline-block;
+            border-bottom : solid 1.5px #d9d9d9;
+            background-color : white;
+            width : 30%;
+            height : 30px;
+            margin-left : 2%;
+            padding-top: 3px;
+        }
+
+        .detail_text{
+            text-decoration: none;
+            color:black;
+            font-size : 17px;
+        }
+        .detail_text:hover{
+            text-decoration: none;
+            color: black;
+        }
+        .small{
+            width: 25%;
+            display: inline-block;
+            margin-left : 0%;
+        }
+        .form_file{
+            display: inline-block;
+            width: 50%;
+            margin-left: 10%;
+        }
+        .plus_button{
+            display: inline-block;
+            margin-left : 5px;
+        }
+        .submit_button{
+            margin-left:40%; width: 20%; height: 50px; background-color: #3b3838; color:white; border:none
+        }
+
+    </style>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -28,7 +81,7 @@
                         $('#language tr:last').after ('<tr><td>' + data.LANGUAGE[i]+'</td><td>' + data.COMPETENCE[i] + '</td></tr>');
                     }
                     for (let i=0; i<data['COUNT(FILE)']; i++) {
-                        $('#request_document tr:last').after('<tr><td><button type="button" onclick="window.open(\'/download/req_doc?rNum=' + rNum + '&i=' + i + '\')">다운로드</button></td></tr>');
+                        $('#request_document tr:last').after('<tr><td><button type="button" onclick="window.open(\'/download/req_doc?rNum=' + rNum + '&i=' + i + '\')">의뢰문서 ' + (i+1) +' 다운로드</button></td></tr>');
                     }
                 },
                 error: function (err) {
@@ -43,34 +96,57 @@
     </script>
 </head>
 <body>
-    <h1>의뢰 상세보기</h1>
+<div class="w3-card-4" style="width:80%; margin-left:10%; margin-top: 15px;">
+    <div class="w3-container form_title_box">
+        <h2>Request Detail</h2>
+    </div>
+    <br>
     <div>
-        의뢰제목 :
-        <a id="title"></a><br>
-        담당 프리랜서 ID :
-        <a id="f_id"></a><br>
-        의뢰자 ID :
-        <a id="c_id"></a><br>
-        시작 날짜 :
-        <a id="s_date"></a><br>
-        종료 날짜 :
-        <a id="e_date"></a><br>
-        의뢰비용 :
-        <a id="cost"></a><br>
-        요구 경력 :
-        <a id="career"></a><br>
-        언어별 능숙도 :
-        <table id="language" style="width: 100%;">
+        <p class="form_text">의뢰제목</p>
+        <div class="form_input"><a class="detail_text" id="title"></a></div><br><br>
+        <p class="form_text" >담당 프리랜서 ID</p>
+        <div class="form_input"><a class="detail_text" id="f_id"></a></div><br><br>
+        <p class="form_text">의뢰자 ID</p>
+        <div class="form_input"><a class="detail_text" id="c_id"></a></div><br><br>
+        <p class="form_text" style="margin-right:0%">시작날짜</p>
+        <div class="form_input" style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="s_date"></a></div>
+        <p class="form_text" style="margin-right:0%">종료날짜</p>
+        <div class="form_input "style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="e_date"></a></div><br><br>
+        <p class="form_text">의뢰비용</p>
+        <div class="form_input"><a class="detail_text" id="cost"></a><p class="form_text">원</p></div><br><br>
+        <p class="form_text">요구경력</p>
+        <div class="form_input"><a class="detail_text" id="career"></a><p class="form_text">년</p></div><br><br>
+        <p class="form_text">[언어능숙도]</p>
+        <table id="language" style="width: 50%; margin-left: 10%">
             <tr>
-                <th>언어</th>
-                <th>능숙도</th>
+                <th style="text-decoration: underline #3b3838">요구언어</th>
+                <th style="text-decoration: underline #3b3838">능숙도(0-5)</th>
             </tr>
-        </table>
-        <table id = "request_document" style = "width:50%">
+        </table><br>
+        <table id = "request_document" style = "width:50%; margin-left:10%">
             <tr>
                 <th> 의뢰문서 </th>
             </tr>
         </table>
+
+    </div>
+    <div>
+        <!--의뢰비용 :-->
+        <!--<a id="cost"></a><br>-->
+        <!--요구 경력 :-->
+        <!--<a id="career"></a><br>-->
+        <!--<p class="form_text">언어능숙도</p>-->
+        <!--<table id="language" style="width: 100%; margin-left: 10%">-->
+            <!--<tr>-->
+                <!--<th>언어</th>-->
+                <!--<th>능숙도</th>-->
+            <!--</tr>-->
+        <!--</table>-->
+        <!--<table id = "request_document" style = "width:50%; margin-left:10%">-->
+            <!--<tr>-->
+                <!--<th> 의뢰문서 </th>-->
+            <!--</tr>-->
+        <!--</table>-->
     </div>
 </body>
 </html>

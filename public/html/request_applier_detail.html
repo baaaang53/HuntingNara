@@ -6,6 +6,58 @@
 
     <!-- bootstrap including jquery -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .form_title_box{
+            height : 100px;
+            background-color : #3b3838;
+            color:white;
+            text-align : center;
+            padding-top: 20px;
+        }
+        .form_text {
+            color: #3b3838;
+            font-weight : bold;
+            display : inline-block;
+            margin : 10px 0px 10px 10%;
+        }
+        .form_input{
+            display : inline-block;
+            border-bottom : solid 1.5px #d9d9d9;
+            background-color : white;
+            width : 30%;
+            height : 30px;
+            margin-left : 2%;
+            padding-top: 3px;
+        }
+
+        .detail_text{
+            text-decoration: none;
+            color:black;
+            font-size : 17px;
+        }
+        .detail_text:hover{
+            text-decoration: none;
+            color: black;
+        }
+        .small{
+            width: 25%;
+            display: inline-block;
+            margin-left : 0%;
+        }
+        .form_file{
+            display: inline-block;
+            width: 50%;
+            margin-left: 10%;
+        }
+        .plus_button{
+            display: inline-block;
+            margin-left : 5px;
+        }
+        .submit_button{
+            margin-left:40%; width: 20%; height: 50px; background-color: #3b3838; color:white; border:none
+        }
+
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -53,40 +105,56 @@
     </script>
 </head>
 <body>
-    <h1>지원자 상세보기</h1>
-    <div>
-        이름:
-        <a id="name"></a><br>
-        나이:
-        <a id="age"></a><br>
-        휴대폰:
-        <a id="phone"></a><br>
-        전공:
-        <a id="major"></a><br>
-        경력(년):
-        <a id="career"></a><br>
-        평점:
-        <a id="rage"></a><br>
-        언어별 능숙도:
-        <table id="language" style="width: 50%;">
-            <tr>
-                <th>언어</th>
-                <th>능숙도(0~5)</th>
-            </tr>
-        </table><br>
-        내부 포트폴리오:
-        <table id="inner_portfolio" style="width: 50%;">
-            <tr>
-                <th>제목</th>
-                <th>시작날짜</th>
-                <th>종료날짜</th>
-                <th>보고서</th>
-                <th>평점</th>
-            </tr>
-        </table><br>
-        외부 포트폴리오:
-        <button type="button" id="outer_portfolio">다운로드</button>
+<div class="w3-card-4" style="width:80%; margin-left:10%; margin-top: 15px;">
+    <div class="w3-container form_title_box">
+        <h2>Applier Detail</h2>
     </div>
-
+    <br>
+    <div>
+        <p class="form_text">이름</p>
+        <div class="form_input" style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="name"></a></div>
+        <p class="form_text" >나이</p>
+        <div class="form_input" style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="age"></a><p class="form_text">세</p></div><br><br>
+        <p class="form_text">휴대폰</p>
+        <div class="form_input"><a class="detail_text" id="phone"></a></div><br><br>
+        <p class="form_text" >전공</p>
+        <div class="form_input"><a class="detail_text" id="major"></a></div><br><br>
+        <p class="form_text" >경력(년)</p>
+        <div class="form_input" style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="career"></a></div>
+        <p class="form_text" >평점</p>
+        <div class="form_input" style="width:20%; margin-left:2%; margin-right:0%"><a class="detail_text" id="rate"></a></div><br><br>
+    <!--이름:-->
+        <!--<a id="name"></a><br>-->
+        <!--나이:-->
+        <!--<a id="age"></a><br>-->
+        <!--휴대폰:-->
+        <!--<a id="phone"></a><br>-->
+        <!--전공:-->
+        <!--<a id="major"></a><br>-->
+        <!--경력(년):-->
+        <!--<a id="career"></a><br>-->
+        <!--평점:-->
+        <!--<a id="rage"></a><br>-->
+        <p class="form_text">[언어별 능숙도]</p>
+        <table id="language" style="width: 50%; margin-left: 10%">
+            <tr>
+                <th style="text-decoration: underline #3b3838">언어</th>
+                <th style="text-decoration: underline #3b3838">능숙도(0~5)</th>
+            </tr>
+        </table><br>
+        <p class="form_text">[내부 포트폴리오]</p>
+        <table id="inner_portfolio" style="width: 70%; margin-left: 10%;">
+            <tr>
+                <th style="text-decoration: underline #3b3838">제목</th>
+                <th style="text-decoration: underline #3b3838">시작날짜</th>
+                <th style="text-decoration: underline #3b3838">종료날짜</th>
+                <th style="text-decoration: underline #3b3838">보고서</th>
+                <th style="text-decoration: underline #3b3838">평점</th>
+            </tr>
+        </table><br>
+        <p class="form_text">외부 포트폴리오</p>
+        <button type="button" class="plus_button" id="outer_portfolio">다운로드</button>
+    </div>
+</div>
 </body>
 </html>
