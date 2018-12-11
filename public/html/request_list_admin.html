@@ -155,10 +155,12 @@
                 url: '/request/list/rejected',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE', 'DETAIL', 'MODIFY', 'DELETE'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'S_WORKING', 'E_WORKING', 'COST', 'CAREER', 'STATE', 'DETAIL', 'MODIFY', 'DELETE'];
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');
+                        row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');
                         row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         row['MODIFY'] = '<button type="button" onclick="window.open(\'/request/modify_admin?rNum=' + row['R_NUM'] + '\')">수정</button>';
                         row['DELETE'] = '<button type="button" onclick="deleterequest(\''+row['R_NUM']+'\',\''+row['STATE']+'\')">삭제</button>';
@@ -322,9 +324,11 @@
         <table class="styletable" id="request_table" style="width: 100%;">
             <tr>
                 <th>제목</th>
-                <th>시작<button class="up" onclick="sortdate();">▲</button>
+                <th>공고시작<button class="up" onclick="sortdate();">▲</button>
                     <button class="down" onclick="sortdate_rev();">▼</button></th>
-                <th>종료</th>
+                <th>공고마감</th>
+                <th>개발시작</th>
+                <th>개발종료</th>
                 <th>비용 <button class="up" onclick="sortcost();">▲</button>
                     <button class="down" onclick="sortcost_rev();">▼</button></th>
                 <th>요구경력</th>
