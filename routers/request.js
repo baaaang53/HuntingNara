@@ -38,10 +38,10 @@ router.get('/register', (req, res, next) => {
 router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
     const cId = req.session.user_id;
     const title = req.body.title;
-    const cost = req.body.cost;
+    const cost = Number(req.body.cost);
     const s_date = req.body.s_date;
     const e_date = req.body.e_date;
-    const career = req.body.career;
+    const career = Number(req.body.career);
     const language = req.body.language;
     const competence = req.body.competence;
     const documents = req.files;
@@ -59,7 +59,7 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
                 queryResult = await db.insert({
                     into: 'REQ_ABILITY',
                     attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-                    values: [rNum, language[i], competence[i]],
+                    values: [rNum, language[i], Number(competence[i])],
                 });
             }
         }
@@ -67,7 +67,7 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
         queryResult = await db.insert({
             into: 'REQ_ABILITY',
             attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-            values: [rNum, language, competence],
+            values: [rNum, language, Number(competence)],
         });
     }
     if (queryResult == 'success') {
@@ -144,10 +144,10 @@ router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
 router.post('/modify', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
     const title = req.body.title;
-    const cost = req.body.cost;
+    const cost = Number(req.body.cost);
     const sDate = req.body.s_date;
     const eDate = req.body.e_date;
-    const career = req.body.career;
+    const career = Number(req.body.career);
     const language = req.body.language;
     const competence = req.body.competence;
     let queryResult = await db.update({
