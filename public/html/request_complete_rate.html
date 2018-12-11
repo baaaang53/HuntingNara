@@ -12,6 +12,12 @@
     <script type="text/javascript">
         function submitRate() {
             const rNum = location.href.toString().split('?')[1].split('=')[1];
+            {
+                const rate = $("input").value;
+                if(rate <0 || rate>5){
+                    return false;
+                }
+            }
             $.ajax({
                 method: 'post',
                 url: '/request/complete/rate',
