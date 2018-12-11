@@ -47,7 +47,6 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
              const salt = buf.toString('base64');
              let queryResult;
              if (type == 'freelancer') {
-                 console.log(typeof req.body.age);
                  const age = req.body.age;
                  const career = req.body.career;
                  const major = req.body.major;
