@@ -38,10 +38,10 @@ router.get('/register', (req, res, next) => {
 router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
     const cId = req.session.user_id;
     const title = req.body.title;
-    const cost = req.body.cost;
+    const cost = Number(req.body.cost);
     const s_date = req.body.s_date;
     const e_date = req.body.e_date;
-    const career = req.body.career;
+    const career = Number(req.body.career);
     const language = req.body.language;
     const competence = req.body.competence;
     const documents = req.files;
@@ -59,7 +59,7 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
                 queryResult = await db.insert({
                     into: 'REQ_ABILITY',
                     attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-                    values: [rNum, language[i], competence[i]],
+                    values: [rNum, language[i], Number(competence[i])],
                 });
             }
         }
@@ -67,7 +67,7 @@ router.post('/register', upload.array('document'), wrapper.asyncMiddleware(async
         queryResult = await db.insert({
             into: 'REQ_ABILITY',
             attributes: ['R_NUM', 'LANGUAGE', 'COMPETENCE'],
-            values: [rNum, language, competence],
+            values: [rNum, language, Number(competence)],
         });
     }
     if (queryResult == 'success') {
@@ -144,10 +144,10 @@ router.post('/info', wrapper.asyncMiddleware(async (req, res, next) => {
 router.post('/modify', upload.array('document'), wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
     const title = req.body.title;
-    const cost = req.body.cost;
+    const cost = Number(req.body.cost);
     const sDate = req.body.s_date;
     const eDate = req.body.e_date;
-    const career = req.body.career;
+    const career = Number(req.body.career);
     const language = req.body.language;
     const competence = req.body.competence;
     let queryResult = await db.update({
@@ -305,7 +305,7 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
         table: 'REQUEST',
         set: {
             STATE: 'complete',
-            E_WORKING: date
+            E_WORKING: getDate()
         },
         where: {
             R_NUM: rNum
@@ -332,6 +332,7 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
 
 // 의뢰 완료 평점 입력 페이지
 router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
+    const rNum = req.query.rNum;
     if (req.session.user_type == 'client') {
         let queryResult = await db.select({
             from: 'REQUEST',
@@ -344,7 +345,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
             res.redirect('/');
             return;
         }
-    } else if (req.seeion.user_type == 'freelancer') {
+    } else if (req.session.user_type == 'freelancer') {
         let queryResult = await db.select({
             from: 'REQUEST',
             what: ['C_RATE'],
@@ -364,7 +365,7 @@ router.get('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
 router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => {
     const type = req.session.user_type;
     const rNum = req.body.rNum;
-    const rate = req.body.rate;
+    const rate = Number(req.body.rate);
     if (type == 'freelancer') {
         let queryResult = await db.update({
             table: 'REQUEST',
@@ -387,8 +388,8 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
             }
         });
         const cId = queryResult[0]['C_ID'];
-        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const newReqCount = Number(queryResult[0]['REQ_COUNT']) + 1;
+        const newRate = (Number(queryResult[0]['RATE']) * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
@@ -422,8 +423,8 @@ router.post('/complete/rate', wrapper.asyncMiddleware(async (req, res, next) => 
             }
         });
         const fId = queryResult[0]['F_ID'];
-        const newReqCount = queryResult[0]['REQ_COUNT'] + 1;
-        const newRate = (queryResult[0]['RATE'] * (newReqCount - 1) + rate) / newReqCount;
+        const newReqCount = Number(queryResult[0]['REQ_COUNT']) + 1;
+        const newRate = (Number(queryResult[0]['RATE']) * (newReqCount - 1) + rate) / newReqCount;
         queryResult = await db.update({
             table: 'USER',
             set: {
@@ -516,7 +517,7 @@ router.post('/list/registered', wrapper.asyncMiddleware(async (req, res, next) =
     res.json(queryResult);
 }));
 
-// 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력
+// 지원가능 의뢰 목록 요청 _ 프리랜서(possible) _ 경력, 능력, S_DATE, E_DATE
 router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     const id = req.session.user_id;
     let queryResult = await db.select({
@@ -538,8 +539,9 @@ router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     for (const data of queryResult) {
         fAbility[data['LANGUAGE']] = data['COMPETENCE'];
     }
+    const today = getDate();
     queryResult = await db.getQueryResult('SELECT A.R_NUM, A.LANGUAGE, A.COMPETENCE FROM REQ_ABILITY AS A\ ' +
-        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ';');
+        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ' AND date(now()) >= date(R.S_DATE) AND date(now()) <= date(R.E_DATE);');
     const rNums = [];
     let rNum = queryResult[0]['R_NUM'];
     let flag = true;

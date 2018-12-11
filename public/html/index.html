@@ -11,6 +11,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#pw')[0].addEventListener("keyup", function(event) {
+                event.preventDefault();
+                if (event.keyCode === 13) {
+                    $('#loginButton').click();
+                }
+            });
+        });
         function login() {
             $.ajax({
                 type: 'post',
@@ -52,7 +60,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <br><button type="button" class="btn btn-default" onclick="login();">로그인</button>
+                        <br><button type="button" class="btn btn-default" id="loginButton" onclick="login();">로그인</button>
                         &emsp;<a href="/user/register" ><button type="button" class ="btn btn-default">회원가입</button></a>
                     </td>
                 </tr>

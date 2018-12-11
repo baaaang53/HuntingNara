@@ -47,8 +47,8 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
              const salt = buf.toString('base64');
              let queryResult;
              if (type == 'freelancer') {
-                 const age = req.body.age;
-                 const career = req.body.career;
+                 const age = Number(req.body.age);
+                 const career = Number(req.body.career);
                  const major = req.body.major;
                  const language = req.body.language;
                  const competence = req.body.competence;
@@ -64,7 +64,7 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
                              queryResult = await db.insert({
                                  into: 'F_ABILITY',
                                  attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                 values: [id, language[i], competence[i]],
+                                 values: [id, language[i], Number(competence[i])],
                              });
                          }
                      }
@@ -72,7 +72,7 @@ router.post('/register', upload.single('portfolio'), wrapper.asyncMiddleware(asy
                      queryResult = await db.insert({
                          into: 'F_ABILITY',
                          attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                         values: [id, language, competence],
+                         values: [id, language, Number(competence)],
                      });
                  }
                  queryResult = await db.insert({
@@ -238,8 +238,8 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                 const salt = buf.toString('base64');
                 let queryResult;
                 if (type == 'freelancer') {
-                    const age = req.body.age;
-                    const career = req.body.career;
+                    const age = Number(req.body.age);
+                    const career = Number(req.body.career);
                     const major = req.body.major;
                     const language = req.body.language;
                     const competence = req.body.competence;
@@ -270,7 +270,7 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                                 queryResult = await db.insert({
                                     into: 'F_ABILITY',
                                     attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                    values: [id, language[i], competence[i]],
+                                    values: [id, language[i], Number(competence[i])],
                                 });
                             }
                         }
@@ -279,7 +279,7 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                             queryResult = await db.insert({
                                 into: 'F_ABILITY',
                                 attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                                values: [id, language, competence],
+                                values: [id, language, Number(competence)],
                             });
                         }
                     }
@@ -317,8 +317,8 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
     } else {
         let queryResult;
         if (type == 'freelancer') {
-            const age = req.body.age;
-            const career = req.body.career;
+            const age = Number(req.body.age);
+            const career = Number(req.body.career);
             const major = req.body.major;
             const language = req.body.language;
             const competence = req.body.competence;
@@ -347,7 +347,7 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                         queryResult = await db.insert({
                             into: 'F_ABILITY',
                             attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                            values: [id, language[i], competence[i]],
+                            values: [id, language[i], Number(competence[i])],
                         });
                     }
                 }
@@ -356,7 +356,7 @@ router.post('/modify', upload.single('portfolio'), wrapper.asyncMiddleware(async
                     queryResult = await db.insert({
                         into: 'F_ABILITY',
                         attributes: ['F_ID', 'LANGUAGE', 'COMPETENCE'],
-                        values: [id, language, competence],
+                        values: [id, language, Number(competence)],
                     });
                 }
             }
