@@ -321,7 +321,8 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     const id = req.session.user_id;
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
-    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\" onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button>';        // 상세정보 페이지 보여주면 좋을 듯
+    const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\"\ ' +
+        'onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button>';
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],

@@ -126,10 +126,12 @@
                 url: '/request/list/registered',
                 data: {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER','STATE', 'DETAIL'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'S_WORKING', 'E_WORKING', 'COST', 'CAREER','STATE', 'DETAIL'];
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');
+                        row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');
                         row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
@@ -326,9 +328,11 @@
     <table class="styletable" id="request_table">
         <tr>
             <th>제목</th>
-            <th>시작<button class="up" onclick="sortdate();">▲</button>
+            <th>공고시작<button class="up" onclick="sortdate();">▲</button>
                 <button class="down" onclick="sortdate_rev();">▼</button></th>
-            <th>종료</th>
+            <th>공고마감</th>
+            <th>개발시작</th>
+            <th>개발마감</th>
             <th>비용 <button class="up" onclick="sortcost();">▲</button>
                 <button class="down" onclick="sortcost_rev();">▼</button></th>
             <th>요구경력</th>
