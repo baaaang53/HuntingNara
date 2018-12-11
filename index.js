@@ -7,7 +7,6 @@ const http = require('http');
 const path = require('path');
 const router = require('./router');
 const config = require('./config');
-const socket = require('./socket.io');
 const session = require('express-session');
 
 const app = express();
@@ -40,11 +39,6 @@ app.use((err, req, res, next) => {
 });
 
 const server = http.createServer(app);
-const io = require('socket.io')(server);
-
-io.on('connect', socket.connect);
-
-
 
 server.listen(config.port);
 console.log(`server start on port ${config.port}`);
