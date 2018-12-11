@@ -82,9 +82,42 @@
         function submitForm() {
             const formData = new FormData();
             for (const input of $('#req_reg input').not($('#req_reg input[type="file"]'))) {
+                if(input.value === ""){
+                    switch(input.name){
+                        case("title"):
+                            alert("입력된 의뢰제목이 없습니다");
+                            return false;
+                        case("cost"):
+                            alert("입력된 의뢰비용이 없습니다");
+                            return false;
+                        case("s_date"):
+                            alert("입력된 공고시작날짜가 없습니다");
+                            return false;
+                        case("e_date"):
+                            alert("입력된 공고마감날짜가 없습니다");
+                            return false;
+                        case("career"):
+                            alert("입력된 필요경력이 없습니다");
+                            return false;
+                        case("language"):
+                            alert("입력된 요구언어가 없습니다");
+                            return false;
+                        case("competence"):
+                            alert("입력된 요구 능숙도가 없습니다");
+                            return false;
+                    }
+                }
+                if((input.name === "competence") && ((input.value<0)|| input.value>5)){
+                    alert("입력한 능숙도의 범위를 확인해주세요");
+                    return false;
+                }
                 formData.append(input.name, input.value);
             }
             for (const input of $('#req_reg input[type="file"]')) {
+                if (input.files.length === 0) {
+                    alert("의뢰문서를 업로드 해주세요")
+                    return false;
+                }
                 formData.append(input.name, input.files[0]);
             }
             $.ajax({
