@@ -82,8 +82,6 @@
                     $('#s_date').text(new Date(data.S_DATE).toLocaleDateString('ko-KR'));
                     $('#e_date').text(new Date(data.E_DATE).toLocaleDateString('ko-KR'));
                     //이 부분 왜?????
-                    console.log("여기좀봐주세요");
-                    console.log(data.S_WORKING);
                     if (data.S_WORKING == null){$('#s_working').text("미정");}
                     else {data.S_WORKING = new Date(data.S_WORKING).toLocaleDateString('ko-KR');}
                     if (data.E_WORKING == null){$('#e_working').text("미정");}
