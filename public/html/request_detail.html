@@ -81,11 +81,12 @@
                     $('#c_id').text(data.C_ID);
                     $('#s_date').text(new Date(data.S_DATE).toLocaleDateString('ko-KR'));
                     $('#e_date').text(new Date(data.E_DATE).toLocaleDateString('ko-KR'));
-                    //이 부분 왜?????
-                    if (data.S_WORKING == null){$('#s_working').text("미정");}
+                    if (!data.S_WORKING){$('#s_working').text("미정");}
                     else {data.S_WORKING = new Date(data.S_WORKING).toLocaleDateString('ko-KR');}
-                    if (data.E_WORKING == null){$('#e_working').text("미정");}
+                    if (!data.E_WORKING){$('#e_working').text("미정");}
                     else {data.E_WORKING = new Date(data.E_WORKING).toLocaleDateString('ko-KR');}
+                    $('#s_working').text(data.S_WORKING);
+                    $('#e_working').text(data.E_WORKING);
                     $('#cost').text(data.COST);
                     $('#career').text(data.CAREER);
                     for (let i=0; i<data.LANGUAGE.length; i++) {
