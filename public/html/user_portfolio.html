@@ -130,10 +130,10 @@
             data: {},
             success: function(data, status) {
                 $('#inner_portfolio').find('tr:gt(0)').remove();
-                const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'RATE'];
+                const cols = ['TITLE','S_WORKING', 'E_WORKING', 'R_NUM', 'F_RATE'];
                 for (let i=0; i<data.length; i++) {
-                    data[i]['S_DATE'] = new Date(data[i]['S_DATE']).toLocaleDateString('ko-KR');
-                    data[i]['E_DATE'] = new Date(data[i]['E_DATE']).toLocaleDateString('ko-KR');
+                    data[i]['S_WORKING'] = new Date(data[i]['S_WORKING']).toLocaleDateString('ko-KR');
+                    data[i]['E_WORKING'] = new Date(data[i]['E_WORKING']).toLocaleDateString('ko-KR');
                     data[i]['R_NUM'] = '<button type="button" onclick="window.open(\'/download/report?rNum=' + data[i]['R_NUM'] + '\')">다운로드</button>'
                     let newTr = '<tr>';
                     for (const col of cols) {
@@ -172,8 +172,8 @@
     <table class="styletable" id="inner_portfolio" style="width:100%; margin-top:0; display:inline-block">
             <tr>
                 <th>제목</th>
-                <th>시작날짜</th>
-                <th>종료날짜</th>
+                <th>개발시작날짜</th>
+                <th>개발종료날짜</th>
                 <th>보고서</th>
                 <th>평점</th>
             </tr>
