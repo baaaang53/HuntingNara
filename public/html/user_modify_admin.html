@@ -88,7 +88,7 @@
                     $('#phone').val(data['phone']);
                     $('#name').val(data['name']);
                     if (data['type'] == 'freelancer') {
-                        $('fieldset.additional_form').show();
+                        $('fieldset.additional_form').prop('hidden', false);
                         $('fieldset.additional_form input').not('#portfolio').prop('required', true);
                         $('#age').val(data['age']);
                         $('#career').val(data['career']);
@@ -122,25 +122,35 @@
             const formData = new FormData();
             for (const input of $('#register input').not($('#register input[type="file"]'))) {
                 if(input.value === ""){
-                    switch(input.name){
+                    switch (input.name) {
+                        case("name"):
+                            alert('입력된 이름이 없습니다');
+                            return false;
                         case("phone"):
                             alert("입력된 전화번호가 없습니다");
                             return false;
-                        case("age"):
-                            alert("입력된 나이가 없습니다");
-                            return false;
-                        case("career"):
-                            alert("입력된 경력이 없습니다");
-                            return false;
-                        case("major"):
-                            alert("입력된 전공학과가 없습니다");
-                            return false;
-                        case("language"):
-                            alert("최소 하나 이상의 능숙한 언어를 입력해주세요");
-                            return false;
-                        case("competence"):
-                            alert("입력한 언어의 능숙도를 입력해주세요");
-                            return false;
+                    }
+                    if (!$('fieldset.additional_form').prop('hidden')) {
+                        switch (input.name) {
+                            case("phone"):
+                                alert("입력된 전화번호가 없습니다");
+                                return false;
+                            case("age"):
+                                alert("입력된 나이가 없습니다");
+                                return false;
+                            case("career"):
+                                alert("입력된 경력이 없습니다");
+                                return false;
+                            case("major"):
+                                alert("입력된 전공학과가 없습니다");
+                                return false;
+                            case("language"):
+                                alert("최소 하나 이상의 능숙한 언어를 입력해주세요");
+                                return false;
+                            case("competence"):
+                                alert("입력한 언어의 능숙도를 입력해주세요");
+                                return false;
+                        }
                     }
                 }
                 if(input.name ==="competence" && ((input.value<0)||input.value>5)){
