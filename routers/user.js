@@ -412,6 +412,7 @@ router.post('/list_all', wrapper.asyncMiddleware(async (req, res, next) => {
     });
     res.json(queryResult);
 }));
+
 router.post('/list_free', wrapper.asyncMiddleware(async(req,res,next) => {
     const queryResult = await db.select({
         from:'USER',
@@ -420,6 +421,7 @@ router.post('/list_free', wrapper.asyncMiddleware(async(req,res,next) => {
     })
     res.json(queryResult)
 }))
+
 router.post('/list_client', wrapper.asyncMiddleware(async(req,res,next) =>{
     const queryResult = await db.select({
         from:'USER',
@@ -428,36 +430,6 @@ router.post('/list_client', wrapper.asyncMiddleware(async(req,res,next) =>{
     })
     res.json(queryResult)
 }))
-
-
-
-// 이건 왜 여기있지??
-router.get('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
-    const queryObject = url.parse(req.url, true).query;
-    const ID = queryObject['ID'];
-    const queryResult1 = await db.select({
-        from: 'F_ABILITY',
-        what: ['*'],
-        where: {ID: ID}
-    });
-    const queryResult2 = await db.select({
-        from: 'OUTER_PORTFOLIO',
-        what: ['*'],
-        where: {F_ID: ID}
-    });
-    const queryResult3 = await db.select({
-        from: 'REQUEST',
-        what: ['*'],
-        where: {F_ID: ID,
-            STATE : "complete"} // innerportfolio
-    });
-    const result = {
-        ability: queryResult1,
-        outerportfolio: queryResult2,
-        innerportfolio: queryResult3
-    }
-    res.json(result);
-}));
 
 // 프리랜서 포트폴리오 조회 페이지
 router.get('/portfolio', wrapper.asyncMiddleware(async (req, res, next) => {

@@ -322,7 +322,7 @@ router.post('/complete/accept', wrapper.asyncMiddleware(async (req, res, next) =
     const fId = queryResult[0]['F_ID'];
     const title = queryResult[0]['TITLE'];
     const content = '의뢰 완료 수락됨<br>의뢰제목: ' + title + '<br><button type=\\"button\\"\ ' +
-        'onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button>';
+        'onclick=\\"window.open(\'/request/complete/rate?rNum=' + rNum +'\')\\">평점입력</button> ';
     queryResult = await db.insert({
         into: 'MESSAGE',
         attributes: ['CONTENT', 'DATETIME', 'S_ID', 'R_ID'],
@@ -542,7 +542,8 @@ router.post('/list/possible', wrapper.asyncMiddleware(async(req, res, next)=> {
     }
     const today = getDate();
     queryResult = await db.getQueryResult('SELECT A.R_NUM, A.LANGUAGE, A.COMPETENCE FROM REQ_ABILITY AS A\ ' +
-        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + ' AND date(now()) >= date(R.S_DATE) AND date(now()) <= date(R.E_DATE);');
+        'LEFT JOIN REQUEST AS R ON A.R_NUM = R.R_NUM WHERE R.F_ID = "admin" AND R.CAREER <= ' + career + '\ ' +
+        'AND date(now()) >= date(R.S_DATE) AND date(now()) <= date(R.E_DATE);');
     const rNums = [];
     let rNum = queryResult[0]['R_NUM'];
     let flag = true;
