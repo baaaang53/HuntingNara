@@ -127,8 +127,10 @@
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
-                        row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');
-                        row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');
+                        if (row['S_WORKING']===null){row['S_WORKING'] = '-';}
+                        else {row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');}
+                        if (row['E_WORKING'] === null){row['E_WORKING'] ='-';}
+                        else {row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');}
                         row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
@@ -264,7 +266,7 @@
 <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 5px; margin-bottom: 5px">
 
 <div class="w3-container" style="width:85%; text-align: center; padding:0;">
-    <table class="styletable" id="request_table" style="width: 100%;">
+    <table class="styletable" id="request_table" style="width: 100%; background : #eee;">
         <tr>
             <th>제목</th>
             <th>공고시작<button class="up" onclick="sortdate();">▲</button>

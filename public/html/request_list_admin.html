@@ -168,8 +168,10 @@
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
-                        row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');
-                        row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');
+                        if (row['S_WORKING']===null){row['S_WORKING'] = '-';}
+                        else {row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');}
+                        if (row['E_WORKING'] === null){row['E_WORKING'] ='-';}
+                        else {row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');}
                         row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         row['MODIFY'] = '<button type="button" onclick="window.open(\'/request/modify_admin?rNum=' + row['R_NUM'] + '\')">수정</button>';
                         row['DELETE'] = '<button type="button" onclick="deleterequest(\''+row['R_NUM']+'\',\''+row['STATE']+'\')">삭제</button>';
@@ -187,6 +189,7 @@
                 }
             });
         }
+
 
         function deleterequest(rnum, state){
             if(state != 'registered' && state != 'applying'){
