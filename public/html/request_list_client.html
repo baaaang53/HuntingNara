@@ -134,11 +134,11 @@
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        if (row['F_ID'] == 'admin') {
-                            newTr += '<td ><button type="button" onclick="deleteRequest(' + row['R_NUM'] + ')">삭제하기</button></td>';
-                        }
                         if (row['STATE'] == 'applying') {
                             newTr += '<td ><button  type="button" onclick="window.open(\'/request/applier/list?rNum=' + row['R_NUM'] + '\')">지원자목록</button></td>';
+                        }
+                        if (row['F_ID'] == 'admin') {
+                            newTr += '<td ><button type="button" onclick="deleteRequest(' + row['R_NUM'] + ')">삭제하기</button></td>';
                         }
                         if (row['STATE'] == 'c_requesting') {
                             newTr += '<td ><button  type="button" onclick="window.open(\'/request/complete/accept?rNum=' + row['R_NUM'] + '\')">완료요청검토</button></td>';
@@ -287,7 +287,7 @@
 <h1 style="margin-left: 10%;margin-bottom:0;">My Request List</h1>
 <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 5px; margin-bottom: 5px">
 
-<div class="w3-container" style="width:85%; text-align:center; padding:0;">
+<div class="w3-container" style="width:100%; text-align:center; padding:0;">
     <table class="styletable" id="request_table" style="width: 100%; background-color:#eee" id="request_table" style="width: 100%;">
         <tr>
             <th>제목</th>

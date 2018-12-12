@@ -133,10 +133,6 @@
                 formData.append(input.name, input.value);
             }
             for (const input of $('#register input[type="file"]')) {
-                if (input.files.length === 0) {
-                    alert("포트폴리오를 업로드 해주세요")
-                    return false;
-                }
                 formData.append(input.name, input.files[0]);
             }
             $.ajax({

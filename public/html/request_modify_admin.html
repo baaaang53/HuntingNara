@@ -158,10 +158,6 @@
                 formData.append(input.name, input.value);
             }
             for (const input of $('#req_reg input[type="file"]')) {
-                if (input.files.length === 0) {
-                    alert("의뢰문서를 업로드 해주세요")
-                    return false;
-                }
                 formData.append(input.name, input.files[0]);
             }
             $.ajax({
