@@ -123,7 +123,8 @@
                     const cols = ['ID', 'TYPE', 'NAME', 'PHONE', 'RATE', 'CAREER', 'AGE', 'MAJOR', 'MODIFY', 'DELETE'];
                     for (const row of data) {
                         row['MODIFY'] = '<button type="button" onclick="window.open(\'/user/modify_admin?rNum=' + row['ID'] + '\')">수정</button>';
-                        row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\',\''+row['STATE']+'\')">삭제</button>';
+                        if (row['ID'] != 'admin') row['DELETE'] = '<button type="button" onclick="delete_user(\''+row['ID']+'\',\''+row['STATE']+'\')">삭제</button>';
+                        else row['DELETE'] = '';
                         let newTr = '<tr>';
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';

@@ -469,7 +469,7 @@ router.post('/inner_portfolio', wrapper.asyncMiddleware(async (req, res, next) =
     const id = req.session.user_id;
     const queryResult = await db.select({
         from: 'REQUEST',
-        what: ['TITLE', 'S_WORKING', 'E_WORKING', 'F_RATE', 'R_NUM'],
+        what: ['*'],
         where: {
             F_ID: id,
             STATE: 'complete'
