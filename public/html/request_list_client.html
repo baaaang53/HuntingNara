@@ -157,6 +157,48 @@
             });
         }
 
+        function show_ongoing() {
+            $('#request_table').find('tr:gt(0)').remove()
+            $.ajax({
+                type: 'post',
+                url: '/request/list/client/ongoing',
+                data: {},
+                success: function(data) {
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'S_WORKING', 'E_WORKING', 'COST', 'STATE', 'DETAIL'];
+                    for (const row of data) {
+                        row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
+                        row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        if (row['S_WORKING']===null){row['S_WORKING'] = '-';}
+                        else {row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');}
+                        if (row['E_WORKING'] === null){row['E_WORKING'] ='-';}
+                        else {row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');}
+                        row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
+                        let newTr = '<tr>';
+                        for (const col of cols) {
+                            newTr += '<td>' + row[col] + '</td>';
+                        }
+                        if (row['STATE'] == 'applying') {
+                            newTr += '<td ><button  type="button" onclick="window.open(\'/request/applier/list?rNum=' + row['R_NUM'] + '\')">지원자목록</button></td>';
+                        }
+                        if (row['F_ID'] == 'admin') {
+                            newTr += '<td><button type="button" onclick="window.open(\'/request/modify?rNum=' + row['R_NUM'] + '\')">수정하기</button></td>';
+                            newTr += '<td><button type="button" onclick="deleteRequest(' + row['R_NUM'] + ')">삭제하기</button></td>';
+                        }
+                        if (row['STATE'] == 'c_requesting') {
+                            newTr += '<td ><button  type="button" onclick="window.open(\'/request/complete/accept?rNum=' + row['R_NUM'] + '\')">완료요청검토</button></td>';
+                        }
+                        newTr += '</tr>';
+                        $('#request_table tr:last').after(newTr);
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                    alert('오류가 발생하였습니다');
+                }
+            });
+        }
+
+
         function deleteRequest(rNum) {
             $.ajax({
                 type: 'post',
@@ -288,6 +330,12 @@
 
 <h1 style="margin-left: 10%;margin-bottom:0;">My Request List</h1>
 <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 5px; margin-bottom: 5px">
+<div class="w3-bar" style="width:80%; margin-left:10%; margin-bottom:0;">
+    <button id="showclient" class="w3-bar-item selecting" type="button" onclick="show_client();">전체 의뢰 보기</button>
+    <button id="showongoing" class="w3-bar-item selecting" type="button" onclick="show_ongoing();">진행중인 의뢰 보기</button>
+</div>
+<hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 0px; margin-bottom: 5px">
+
 
 <div class="w3-container" style="width:100%; text-align:center; padding:0;">
     <table class="styletable" id="request_table" style="width: 80%; padding:0; background-color:#eee" id="request_table" style="width: 100%;">

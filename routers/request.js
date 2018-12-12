@@ -585,8 +585,13 @@ router.post('/list/client', wrapper.asyncMiddleware(async (req, res, next) => {
     const queryResult = await db.select({
         from: 'REQUEST',
         what: ['*'],
-        where : {C_ID : req.session.user_id}
+        where : {C_ID : req.session.user_id }
     });
+    res.json(queryResult);
+}));
+router.post('/list/client/ongoing', wrapper.asyncMiddleware(async (req, res, next) => {
+    const queryResult = await db.getQueryResult( "select * from REQUEST WHERE C_ID='" + req.session.user_id + "' AND STATE IN ('working','c_requesting','rejected');"
+    );
     res.json(queryResult);
 }));
 
