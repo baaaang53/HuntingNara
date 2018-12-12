@@ -130,7 +130,7 @@
             data: {},
             success: function(data, status) {
                 $('#inner_portfolio').find('tr:gt(0)').remove();
-                const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'RATE'];
+                const cols = ['TITLE', 'S_DATE', 'E_DATE', 'R_NUM', 'F_RATE'];
                 for (let i=0; i<data.length; i++) {
                     data[i]['S_DATE'] = new Date(data[i]['S_DATE']).toLocaleDateString('ko-KR');
                     data[i]['E_DATE'] = new Date(data[i]['E_DATE']).toLocaleDateString('ko-KR');
