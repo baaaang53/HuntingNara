@@ -599,7 +599,7 @@ router.post('/detail', wrapper.asyncMiddleware(async (req, res, next) => {
     const rNum = req.body.rNum;
     let queryResult = await db.select({
         from: 'REQUEST',
-        what: ['TITLE', 'F_ID', 'C_ID', 'S_DATE', 'E_DATE', 'COST', 'CAREER'],
+        what: ['*'],
         where: {
             R_NUM: rNum
         }
