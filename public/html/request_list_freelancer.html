@@ -161,8 +161,8 @@
                 rows = table.rows;
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[3];
-                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    x = rows[i].getElementsByTagName("TD")[5];
+                    y = rows[i + 1].getElementsByTagName("TD")[5];
                     if (parseInt(x.innerHTML) > parseInt(y.innerHTML)) {
                         shouldSwitch = true;
                         break;
@@ -184,8 +184,8 @@
                 rows = table.rows;
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[3];
-                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    x = rows[i].getElementsByTagName("TD")[5];
+                    y = rows[i + 1].getElementsByTagName("TD")[5];
                     if (parseInt(x.innerHTML) < parseInt(y.innerHTML)) {
                         shouldSwitch = true;
                         break;
