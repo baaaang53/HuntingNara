@@ -160,10 +160,12 @@
                 url: '/request/list/possible',
                 data : {},
                 success: function(data) {
-                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST', 'CAREER', 'STATE', 'DETAIL'];
+                    const cols = ['TITLE', 'S_DATE', 'E_DATE', 'COST','S_WORKING', 'E_WORKING', 'CAREER', 'STATE', 'DETAIL'];
                     for (const row of data) {
                         row['S_DATE'] = new Date(row['S_DATE']).toLocaleDateString('ko-KR');
                         row['E_DATE'] = new Date(row['E_DATE']).toLocaleDateString('ko-KR');
+                        row['S_WORKING'] = new Date(row['S_WORKING']).toLocaleDateString('ko-KR');
+                        row['E_WORKING'] = new Date(row['E_WORKING']).toLocaleDateString('ko-KR');
                         row['DETAIL'] = '<button type="button" onclick="window.open(\'/request/detail?rNum=' + row['R_NUM'] + '\')">상세보기</button>';
                         let newTr = '<tr>';
                         for (const col of cols) {
@@ -215,8 +217,8 @@
                 rows = table.rows;
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[3];
-                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    x = rows[i].getElementsByTagName("TD")[5];
+                    y = rows[i + 1].getElementsByTagName("TD")[5];
                     if (parseInt(x.innerHTML) > parseInt(y.innerHTML)) {
                         shouldSwitch = true;
                         break;
@@ -238,8 +240,8 @@
                 rows = table.rows;
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[3];
-                    y = rows[i + 1].getElementsByTagName("TD")[3];
+                    x = rows[i].getElementsByTagName("TD")[5];
+                    y = rows[i + 1].getElementsByTagName("TD")[5];
                     if (parseInt(x.innerHTML) < parseInt(y.innerHTML)) {
                         shouldSwitch = true;
                         break;
@@ -324,7 +326,7 @@
 </div>
 <hr style=" height:0.3px; background-color:lightgrey;color: lightgrey; width:80%; margin-left :10%; margin-right:10%; margin-top: 0px; margin-bottom: 5px">
 
-<div lass="w3-container" style="width:85%; text-align: center; padding:0;">
+<div lass="w3-container" style="width:100%; text-align: center; padding:0;">
     <table class="styletable" id="request_table">
         <tr>
             <th>제목</th>
