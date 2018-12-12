@@ -134,11 +134,11 @@
                         for (const col of cols) {
                             newTr += '<td>' + row[col] + '</td>';
                         }
-                        if (row['F_ID'] == 'admin') {
-                            newTr += '<td ><button type="button" onclick="deleteRequest(' + row['R_NUM'] + ')">삭제하기</button></td>';
-                        }
                         if (row['STATE'] == 'applying') {
                             newTr += '<td ><button  type="button" onclick="window.open(\'/request/applier/list?rNum=' + row['R_NUM'] + '\')">지원자목록</button></td>';
+                        }
+                        if (row['F_ID'] == 'admin') {
+                            newTr += '<td ><button type="button" onclick="deleteRequest(' + row['R_NUM'] + ')">삭제하기</button></td>';
                         }
                         if (row['STATE'] == 'c_requesting') {
                             newTr += '<td ><button  type="button" onclick="window.open(\'/request/complete/accept?rNum=' + row['R_NUM'] + '\')">완료요청검토</button></td>';
